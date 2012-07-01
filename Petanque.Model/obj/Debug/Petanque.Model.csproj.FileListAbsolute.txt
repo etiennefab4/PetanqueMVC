@@ -1,0 +1,12 @@
+C:\Users\Etienne\Documents\Visual Studio 2010\Projects\PetanqueMVC\Petanque.Model\bin\Debug\Petanque.Model.dll
+C:\Users\Etienne\Documents\Visual Studio 2010\Projects\PetanqueMVC\Petanque.Model\bin\Debug\Petanque.Model.pdb
+C:\Users\Etienne\Documents\Visual Studio 2010\Projects\PetanqueMVC\Petanque.Model\bin\Debug\FluentMongo.dll
+C:\Users\Etienne\Documents\Visual Studio 2010\Projects\PetanqueMVC\Petanque.Model\bin\Debug\MongoDB.Bson.dll
+C:\Users\Etienne\Documents\Visual Studio 2010\Projects\PetanqueMVC\Petanque.Model\bin\Debug\MongoDB.Driver.dll
+C:\Users\Etienne\Documents\Visual Studio 2010\Projects\PetanqueMVC\Petanque.Model\bin\Debug\MongoDB.Bson.pdb
+C:\Users\Etienne\Documents\Visual Studio 2010\Projects\PetanqueMVC\Petanque.Model\bin\Debug\MongoDB.Bson.xml
+C:\Users\Etienne\Documents\Visual Studio 2010\Projects\PetanqueMVC\Petanque.Model\bin\Debug\MongoDB.Driver.pdb
+C:\Users\Etienne\Documents\Visual Studio 2010\Projects\PetanqueMVC\Petanque.Model\bin\Debug\MongoDB.Driver.xml
+C:\Users\Etienne\Documents\Visual Studio 2010\Projects\PetanqueMVC\Petanque.Model\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Etienne\Documents\Visual Studio 2010\Projects\PetanqueMVC\Petanque.Model\obj\Debug\Petanque.Model.dll
+C:\Users\Etienne\Documents\Visual Studio 2010\Projects\PetanqueMVC\Petanque.Model\obj\Debug\Petanque.Model.pdb

@@ -1,0 +1,38 @@
+﻿@using System.Globalization
+@model Petanque.Model.Competition.Node
+@{
+    bool isRoot = Model.Level == 0;
+    bool isTop = isRoot || (Model == Model.ParentNode.TopNode);
+    var level = (Model.DepthOfTheTree - Model.Level + 1).ToString(CultureInfo.InvariantCulture);
+    string cssWrap = string.Format("round{0}-{1}wrap", level, isTop ? "top" : "bottom");
+    string cssContent = string.Format("round{0}-{1}", level, isTop ? "top" : "bottom");
+    string content = Model.Team != null ? Model.Team.Name : "En attente";
+    if (isRoot)
+    {
+        cssContent += " winner" + level;
+    }
+    
+}
+@if (isRoot)
+{
+    cssWrap = "tournament32-wrap";
+}
+
+@if (Model.TopNode != null && Model.BottomNode != null)
+{
+    <div class="@cssWrap">
+        <div class="@cssContent">@content</div>
+        @if (Model.TopNode != null)
+        {
+            @Html.Partial("PartialNode", Model.TopNode)
+        }
+        @if (Model.BottomNode != null)
+        {
+            @Html.Partial("PartialNode", Model.BottomNode)
+        }
+    </div>
+}
+else
+{
+    <div class="@cssContent">@content</div>
+}

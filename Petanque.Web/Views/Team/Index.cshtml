@@ -1,0 +1,30 @@
+﻿@using System.Activities.Expressions
+@model System.Collections.Generic.IEnumerable<Petanque.Web.Models.TeamDto>
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Index Teams</title>
+</head>
+<body>
+    <div>
+        <table>
+             @foreach (var teamDto in Model)
+            {
+                <tr>
+                    <td>@teamDto.Nom</td>
+                    <td>@Html.ActionLink("Edit", "Edit", new {Id = teamDto.Id})</td>
+                </tr> 
+            }
+        </table>
+        <ul>
+           
+        </ul>
+        <p>
+            @Html.ActionLink("Add Team", "Create")
+        </p>
+    </div>
+</body>
+</html>

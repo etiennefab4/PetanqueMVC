@@ -1,0 +1,24 @@
+﻿@model Petanque.Web.Models.TeamDto
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>New Team</title>
+</head>
+<body>
+    <div>
+        @using (Html.BeginForm("Create", "Team","POST"))
+        {
+            <fieldset>
+                @Html.DisplayFor(x => x.Nom)
+                @Html.TextBoxFor(x => x.Nom)
+            </fieldset>
+             <p>
+               <input type="submit" value="Save" />
+           </p>
+        }
+    </div>
+</body>
+</html>
