@@ -1,0 +1,37 @@
+﻿@using System.Globalization
+@model Petanque.Model.Competition.Node
+@{
+    bool isWinner = false;
+    bool isLoser = false;
+
+    if (Model.Team != null && Model.ParentNode != null && Model.ParentNode.Team != null)
+    {
+        isWinner = Model.ParentNode.Team.Id == Model.Team.Id;
+        isLoser = Model.ParentNode.Team.Id != Model.Team.Id;
+    }
+
+    bool isNotPlayed = !isWinner && !isLoser;
+
+
+    string content = Model.Team != null ? Model.Team.Name : "En attente";
+
+    if (Model.Team != null)
+    {
+        if (isNotPlayed)
+        {
+    @Html.ActionLink(Model.Team.Name, "SetWinner", "Competition", new { id = Model.CompetitionId, teamId = Model.Team.Id }, null)
+        }
+        else if (isWinner)
+        {
+    @Model.Team.Name
+        }
+        else if (isLoser)
+        {
+    @Html.ActionLink(Model.Team.Name, "GoCryingCompetition", "Competition", new { id = Model.CompetitionId, teamId = Model.Team.Id }, null)
+        }
+    }
+    else
+    {
+    @content
+    }
+}

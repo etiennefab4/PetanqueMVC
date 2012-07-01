@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Petanque.Model.Competition;
 using Petanque.Model.Repository;
 
 namespace Petanque.Model.Team
@@ -7,10 +8,12 @@ namespace Petanque.Model.Team
     public class TeamService
     {
         private readonly MongoRepository<Team> _teamRepo;
+        private readonly Competition.CompetitionService _competitionService;
 
-        public TeamService(MongoRepository<Team> teamRepo)
+        public TeamService(MongoRepository<Team> teamRepo, CompetitionService competitionService)
         {
             _teamRepo = teamRepo;
+            _competitionService = competitionService;
         }
 
         public IEnumerable<Team> GetAllTeams()
@@ -26,6 +29,13 @@ namespace Petanque.Model.Team
         public Team Find(string id)
         {
             return _teamRepo.Find(id);
+        }
+
+        public void CreateTeamInCompetion(Team team, Competition.Competition competition)
+        {
+            competition.AddTeam(team);
+            _competitionService.Save(competition);
+            
         }
     }
 }

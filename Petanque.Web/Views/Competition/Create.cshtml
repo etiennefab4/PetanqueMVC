@@ -1,14 +1,27 @@
-﻿@model Petanque.Model.Competition.Competition
+﻿@model Petanque.Web.Models.CompetitionDto
+
 @{
     Layout = null;
 }
+
 <!DOCTYPE html>
+
 <html>
     <head>
-        <link href="/css/bracket.css" rel="stylesheet" type="text/css" />
-        <title>title</title>
+        <title>Create competition</title>
     </head>
-<body>
-    @Html.Partial("PartialNode", Model.EndNode)
-</body>
+    <body>
+        <div>
+            @using (Html.BeginForm("Create", "Competition","POST"))
+        {
+            <fieldset>
+                @Html.DisplayFor(x => x.Nom)
+                @Html.TextBoxFor(x => x.Nom)
+            </fieldset>
+             <p>
+               <input type="submit" value="Save" />
+           </p>
+        }  
+        </div>
+    </body>
 </html>

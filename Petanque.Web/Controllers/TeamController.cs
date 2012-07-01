@@ -1,24 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using System.Text;
 using System.Web.Mvc;
-using Petanque.Model.Repository;
+using System.Web.Routing;
+using Petanque.Model.Competition;
 using Petanque.Model.Team;
 using Petanque.Web.Models;
-using MongoDB.Bson;
-using MongoDB.Driver.Linq;
-using MongoDB.Driver;
 
 namespace Petanque.Web.Controllers
 {
     public class TeamController : Controller
     {
-        private readonly TeamService _teamService ;
+        private readonly TeamService _teamService;
+        private readonly CompetitionService _competitionService;
 
-        public TeamController(TeamService teamService)
+        public TeamController(TeamService teamService, CompetitionService competitionService)
         {
             _teamService = teamService;
+            _competitionService = competitionService;
         }
 
         //
@@ -27,7 +26,7 @@ namespace Petanque.Web.Controllers
         public ActionResult Index()
         {
             var teams = _teamService.GetAllTeams();
-            var teamDtos = teams.Select(x => new TeamDto() {Nom = x.Name, Id = x.Id});
+            var teamDtos = teams.Select(x => new TeamDto() { Nom = x.Name, Id = x.Id });
             return View(teamDtos);
         }
 
@@ -44,9 +43,9 @@ namespace Petanque.Web.Controllers
 
         public ActionResult Create()
         {
-            var teamDto = new TeamDto(); 
+            var teamDto = new TeamDto();
             return View(teamDto);
-        } 
+        }
 
         //
         // POST: /Team/Create
@@ -58,6 +57,14 @@ namespace Petanque.Web.Controllers
             {
                 var team = new Team(teamDto.Nom);
                 _teamService.Save(team);
+                if (!string.IsNullOrEmpty(teamDto.CompetitionId))
+                {
+                    var competition = _competitionService.Find(teamDto.CompetitionId);
+                    _teamService.CreateTeamInCompetion(team, competition);
+                    return RedirectToAction("AddTeamInCompetition", "Team", new { competitionId = teamDto.CompetitionId });
+                }
+                
+
                 return RedirectToAction("Index");
             }
             catch
@@ -65,19 +72,19 @@ namespace Petanque.Web.Controllers
                 return View();
             }
         }
-        
+
         //
         // GET: /Team/Edit/5
- 
+
         public ActionResult Edit(string id)
         {
             var team = _teamService.Find(id);
-            return View(new TeamDto(){Nom = team.Name});
+            return View(new TeamDto() { Nom = team.Name });
         }
 
         //
         // POST: /Team/Edit/5
-            
+
         [HttpPost]
         public ActionResult Edit(string id, TeamDto teamDto)
         {
@@ -86,7 +93,7 @@ namespace Petanque.Web.Controllers
                 var team = _teamService.Find(id);
                 team.Name = teamDto.Nom;
                 _teamService.Save(team);
- 
+
                 return RedirectToAction("Index");
             }
             catch
@@ -97,7 +104,7 @@ namespace Petanque.Web.Controllers
 
         //
         // GET: /Team/Delete/5
- 
+
         public ActionResult Delete(int id)
         {
             return View();
@@ -112,7 +119,7 @@ namespace Petanque.Web.Controllers
             try
             {
                 // TODO: Add delete logic here
- 
+
                 return RedirectToAction("Index");
             }
             catch
@@ -120,5 +127,45 @@ namespace Petanque.Web.Controllers
                 return View();
             }
         }
+
+        public ActionResult AddTeamInCompetition(string competitionId)
+        {
+            var teamDto = new TeamDto()
+                              {
+                                  CompetitionId = competitionId
+                              };
+            return View("Create", teamDto);
+        }
+
+        public ActionResult AddTeamInCompetitionDebug(string competitionId, int nbTeam)
+        {
+            var competition = _competitionService.Find(competitionId);
+
+            for (int i = 0; i < nbTeam; i++)
+            {
+                var team = new Team(string.Format("{0}-Team{1}",competition.Name, i));
+                _teamService.Save(team);
+                _competitionService.AddTeam(competition, team);
+            }
+
+            return RedirectToAction("Edit", "Competition", new {id = competitionId});
+        }
+
+        private static string RandomString(int size, bool lowerCase)
+        {
+            StringBuilder builder = new StringBuilder();
+            Random random = new Random();
+            char ch;
+            for (int i = 0; i < size; i++)
+            {
+                ch = Convert.ToChar(Convert.ToInt32(Math.Floor(26 * random.NextDouble() + 65)));
+                builder.Append(ch);
+            }
+            if (lowerCase)
+                return builder.ToString().ToLower();
+            return builder.ToString();
+        }
     }
+
+  
 }

@@ -1,19 +1,24 @@
-﻿@model dynamic
-
+﻿@model System.Collections.Generic.IEnumerable<Petanque.Web.Models.CompetitionDto>
 @{
-    Layout = null;
+    Layout = "../Shared/_Layout.cshtml";
+    ViewBag.Title = "Index Competition";
+    
 }
-
-<!DOCTYPE html>
-
-<html>
-    <head>
-        
-        <title>title</title>
-    </head>
-    <body>
-        <div>
-              @Html.ActionLink("Create Competition", "Create")
-        </div>
-    </body>
-</html>
+<h2>
+    Index Competition</h2>
+<div>
+    <table>
+        @foreach (var competitionDto in Model)
+        {
+            <tr>
+                <td>@competitionDto.Nom
+                </td>
+                <td>@Html.ActionLink("Edit", "Edit", new { competitionDto.Id })
+                </td>
+            </tr> 
+        }
+    </table>
+</div>
+<p>
+    @Html.ActionLink("Add Competition", "Create")
+</p>

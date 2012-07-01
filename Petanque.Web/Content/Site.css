@@ -73,3 +73,11 @@ textarea
 {
     display: none;
 }
+
+.loser {
+    background-color: red;
+}
+
+.winner {
+    background-color: green;
+}

@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using MongoDB.Driver;
 using Petanque.Model.Competition;
 using Petanque.Model.Repository;
 using Petanque.Model.Team;
-using Petanque.Web.Controllers;
 using StructureMap;
 using StructureMap.Pipeline;
 
@@ -47,6 +43,8 @@ namespace Petanque.Web
                                                      new MongoRepository<Team>(db));
                                                  x.For<MongoRepository<Competition>>().LifecycleIs(new HybridLifecycle()).Use(
                                                      new MongoRepository<Competition>(db));
+                                                 x.For<MongoRepository<Result>>().LifecycleIs(new HybridLifecycle()).Use(
+                                                    new MongoRepository<Result>(db));
                                              });
             }
         }

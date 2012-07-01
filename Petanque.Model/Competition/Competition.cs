@@ -1,31 +1,59 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Petanque.Model.Repository;
 
 namespace Petanque.Model.Competition
 {
     public class Competition : AbstractMongoEntity
     {
-        public int Depth { get; set; }
+        public int Depth
+        {
+            get
+            {
+                var i = 0;
+
+                while (true)
+                {
+                    var pow = (int) Math.Pow(2, i);
+                    if (InitialTeams.Count <= pow)
+                    {
+                        return i + 1;
+                    }
+                    i++;
+                }
+
+            }
+        }
+
+        public bool IsCryingCompetion { get; set; }
+        public Competition CryingCompetion { get; set; }
 
         public List<Team.Team> Teams { get; set; }
         public List<Team.Team> InitialTeams { get; set; }
 
         public Node EndNode;
+        public string Name { get; set; }
 
-        public Competition(List<Team.Team> teams)
+        protected Competition()
         {
-            Teams = teams;
+            IsCryingCompetion = false;
             InitialTeams = new List<Team.Team>();
-            InitialTeams.AddRange(teams);
-            EndNode = new Node {ParentNode = null};
+            EndNode = new Node { ParentNode = null };
+        }
+
+        public Competition(string name, bool isCryingCompetition):this()
+        {
+            IsCryingCompetion = isCryingCompetition;
+            Name = name;
+            if(!IsCryingCompetion)
+            {
+                CryingCompetion = new Competition(name, true);
+            }
         }
 
         public void AddTeam(Team.Team team)
         {
-            Teams.Add(team);
+            InitialTeams.Add(team);
         }
     }
 }

@@ -39,6 +39,7 @@ namespace Petanque.Web
                     {
                         cm.MapProperty(c => c.Depth);
                         cm.MapProperty(c => c.InitialTeams);
+                        cm.MapProperty(c => c.Name);
                     }
                 );
 
