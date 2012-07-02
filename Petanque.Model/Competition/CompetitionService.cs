@@ -42,7 +42,7 @@ namespace Petanque.Model.Competition
         {
             competition.Shuffle();
             Save(competition);
-        } dd
+        } 
 
         public void AddTeam(Competition competition, Team.Team team)
         {
