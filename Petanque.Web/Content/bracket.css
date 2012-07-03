@@ -87,8 +87,12 @@
 .tournament8-wrap .round3-top {
 	border-bottom: 1px solid #000;
 }
-
-.round3-topwrap, .round3-bottomwrap, .tournament4-wrap {
+.tournament4-wrap {
+    margin: auto;
+    width: 450px;
+    height: 8em;
+}
+.round3-topwrap, .round3-bottomwrap {
 	float: left;
 	width: 450px;
 	height: 8em;
@@ -119,7 +123,12 @@
 	border-right: 1px solid #000;
 }
 
-.round4-topwrap, .round4-bottomwrap, .tournament8-wrap {
+.tournament8-wrap {
+    margin: auto;
+    width: 600px;
+}
+
+.round4-topwrap, .round4-bottomwrap {
 	float: left;
 	width: 600px;
 }
@@ -145,8 +154,12 @@
 }
 
 
+ .tournament16-wrap {
+     margin: auto;
+     width: 750px;
+ }
 
-.round5-topwrap, .round5-bottomwrap, .tournament16-wrap {
+.round5-topwrap, .round5-bottomwrap {
 	float: left;
 	width: 750px;
 }
@@ -194,13 +207,9 @@
 
 
 .tournament32-wrap {
-	float: left;
 	width: 900px;
+    margin: auto;
 }
-
-
-
-
 
 /****** round 7 ******/
 
@@ -211,8 +220,8 @@
 }
 
 .tournament64-wrap {
-	float: left;
 	width: 1050px;
+    margin: auto;
 }
 
 /****** styles for the winner column ******/

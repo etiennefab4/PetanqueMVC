@@ -75,10 +75,10 @@ namespace Petanque.Web.Controllers
             }
             catch (Exception)
             {
-                
+
             }
-            
-            return RedirectToAction("GetTree", "Competition", new {id});
+
+            return RedirectToAction("GetTree", "Competition", new { id });
         }
 
         public ActionResult GetTree(string id)
@@ -107,7 +107,7 @@ namespace Petanque.Web.Controllers
                 var competition = new Competition(competitionDto.Nom, false);
                 _competitionService.Save(competition);
 
-                return RedirectToAction("Index");
+                return RedirectToAction("AddTeamInCompetition", "Team", new { competitionId = competition.Id });
             }
             catch
             {

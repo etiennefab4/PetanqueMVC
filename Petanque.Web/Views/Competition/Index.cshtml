@@ -8,9 +8,11 @@
     @foreach (var competitionDto in Model)
     {
         <tr>
-            <td>@competitionDto.Nom
+            <td>@Html.ActionLink(competitionDto.Nom, "GetTree", new { competitionDto.Id })
             </td>
             <td>@Html.ActionLink("Edit", "Edit", new { competitionDto.Id })
+            </td>
+            <td>@Html.ActionLink("Delete", "Delete", new { competitionDto.Id })
             </td>
         </tr> 
     }
