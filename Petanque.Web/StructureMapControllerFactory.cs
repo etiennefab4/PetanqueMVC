@@ -33,10 +33,11 @@ namespace Petanque.Web
             {
                 ControllerBuilder.Current.SetControllerFactory(new StructureMapControllerFactory());
 
-                var connString = System.Configuration.ConfigurationManager.ConnectionStrings["MongoDB"].ConnectionString;
+                var connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["MongoDB"].ConnectionString;
 
-                var server = MongoServer.Create(connString);
-                var db = server.GetDatabase("petanque");
+                var databaseName = MongoUrl.Create(connectionString).DatabaseName;
+                var server = MongoServer.Create(connectionString);
+                var db = server.GetDatabase(databaseName);
 
 
                 ObjectFactory.Initialize(x =>

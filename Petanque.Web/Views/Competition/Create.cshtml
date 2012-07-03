@@ -1,27 +1,17 @@
 ﻿@model Petanque.Web.Models.CompetitionDto
-
 @{
-    Layout = null;
+    Layout = "../Shared/_Layout.cshtml";
+    ViewBag.Title = "Créer competition";
 }
-
-<!DOCTYPE html>
-
-<html>
-    <head>
-        <title>Create competition</title>
-    </head>
-    <body>
-        <div>
-            @using (Html.BeginForm("Create", "Competition","POST"))
-        {
-            <fieldset>
-                @Html.DisplayFor(x => x.Nom)
-                @Html.TextBoxFor(x => x.Nom)
-            </fieldset>
-             <p>
-               <input type="submit" value="Save" />
-           </p>
-        }  
-        </div>
-    </body>
-</html>
+<div>
+    @using (Html.BeginForm("Create", "Competition", "POST"))
+    {
+        <fieldset>
+            @Html.DisplayFor(x => x.Nom)
+            @Html.TextBoxFor(x => x.Nom)
+        </fieldset>
+        <p>
+            <input type="submit" value="Save" />
+        </p>
+    }
+</div>
