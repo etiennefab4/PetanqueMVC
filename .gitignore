@@ -1,0 +1,35 @@
+# VS noise
+*.pdb
+*.dll
+*.exe
+*.suo
+*.scc
+*.vspscc
+*.user
+*.cache
+*.log
+*.rdl.data
+bin/
+obj/
+
+# windows noise
+Thumbs.db
+~$*.doc
+~$*.docx
+
+# common unwanted folders
+logs/
+
+# old skool
+.svn
+_svn
+
+
+_ReSharper*/
+
+
+
+
+# MS Office
+~$*.docx
+~$*.doc
