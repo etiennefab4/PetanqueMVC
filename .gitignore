@@ -26,7 +26,7 @@ _svn
 
 
 _ReSharper*/
-/_ReSharper.PetanqueMVC
+_ReSharper.PetanqueMVC/
 
 # MS Office
 ~$*.docx

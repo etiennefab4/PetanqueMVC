@@ -1,5 +1,0 @@
-<Modules>
-  <Module PersistentId="01BCA2B4-A709-4D3D-B042-D3616BF94ACB" ModuleId="Petanque.Web" />
-  <Module PersistentId="9A88E80B-AC8A-4E83-938E-EA27496C84EE" ModuleId="Petanque.Model" />
-  <Module PersistentId="2906DE91-FA50-4729-9841-F1CC19F468D9" ModuleId="Petanque.Test" />
-</Modules>
