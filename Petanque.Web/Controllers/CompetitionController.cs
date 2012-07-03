@@ -68,10 +68,10 @@ namespace Petanque.Web.Controllers
         {
             var team = _teamService.Find(teamId);
             var competition = _competitionService.Find(id);
-            var node = _nodeService.GetTree(competition);
+
             try
             {
-                _nodeService.CreateResult(competition, node, team);
+                _competitionService.AddResult(competition, team);
             }
             catch (Exception)
             {
@@ -157,28 +157,12 @@ namespace Petanque.Web.Controllers
         //
         // GET: /Competition/Delete/5
 
-        public ActionResult Delete(int id)
+        public ActionResult Delete(string id)
         {
-            return View();
+            _competitionService.Delete(id);
+            return RedirectToAction("Index");
         }
 
-        //
-        // POST: /Competition/Delete/5
-
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
 
 
         public ActionResult GoCryingCompetition(string id, string teamId)

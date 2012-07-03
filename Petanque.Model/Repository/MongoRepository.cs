@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using MongoDB.Bson;
+using MongoDB.Driver.Builders;
 using MongoDB.Driver.Linq;
 using MongoDB.Driver;
 
@@ -39,6 +40,13 @@ namespace Petanque.Model.Repository
         public T Find(string id)
         {
             return QueryAll().FirstOrDefault(x => x.Id == id);
+        }
+
+        public void Delete(string id)
+        {
+            var objectId = ObjectId.Parse(id); 
+             var query = Query.EQ("_id", objectId); 
+            MongoCollection.Remove(query); 
         }
     }
 }

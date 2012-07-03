@@ -16,17 +16,10 @@ namespace Petanque.Model.Competition
 
         public Node ApplyResultOnCompetition(Competition competition, Node nodeTree)
         {
-            var results = _resultRepo.QueryAll().Where(x => x.Competition == competition).OrderBy(x => x.Date);
-
-            foreach (var result in results)
-            {
-                nodeTree = ApplyResultOnCompetition(result, nodeTree);
-            }
-
-            return nodeTree;
+            return competition.Results.OrderBy(x => x.Date).Aggregate(nodeTree, (current, result) => ApplyResultOnCompetition(result, current));
         }
 
-        public Result CreateResult(Competition competition, Node rootNode, Team.Team teamWin)
+        public Result CreateResult(Node rootNode, Team.Team teamWin)
         {
 
             Node nodeOfTeamWin = SearchNodeOfTeam(teamWin, rootNode);
@@ -38,7 +31,7 @@ namespace Petanque.Model.Competition
 
             Node nodeOfTeamLoose = nodeOfTeamWin.ParentNode.BottomNode == nodeOfTeamWin ? nodeOfTeamWin.ParentNode.TopNode : nodeOfTeamWin.ParentNode.BottomNode;
 
-            var result = new Result { TeamWin = teamWin, TeamLoose = nodeOfTeamLoose.Team, Competition = competition };
+            var result = new Result { TeamWin = teamWin, TeamLoose = nodeOfTeamLoose.Team};
             _resultRepo.Save(result);
             return result;
         }

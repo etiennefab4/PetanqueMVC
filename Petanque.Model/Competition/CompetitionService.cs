@@ -15,7 +15,7 @@ namespace Petanque.Model.Competition
             _competitionRepo = competitionRepo;
             _nodeService = nodeService;
         }
-        
+
         public Competition GetCompetition(string id)
         {
             var competition = _competitionRepo.Find(id);
@@ -42,17 +42,37 @@ namespace Petanque.Model.Competition
         {
             competition.Shuffle();
             Save(competition);
-        } 
+        }
 
         public void AddTeam(Competition competition, Team.Team team)
         {
+            if (competition.IsLocked)
+            {
+                throw new CannotAddTeamInLockedCompetition();
+            }
             competition.AddTeam(team);
             _competitionRepo.Save(competition);
         }
 
+        public void AddResult( Competition competition, Team.Team team )
+        {
+            var rootNode = _nodeService.GetTree(competition);
+            var result = _nodeService.CreateResult(rootNode, team);
+            
+            competition.Results.Add(result);
+            Save(competition);
+            
+        }
+
         public void SendToCryingCompetition(Competition competition, Team.Team team)
         {
-            competition.AddTeam(team);
+            //_nodeService.CreateResult(null, null)
+            //competition.AddTeam(team);
+        }
+
+        public void Delete(string  id)
+        {
+            _competitionRepo.Delete(id);
         }
     }
 }

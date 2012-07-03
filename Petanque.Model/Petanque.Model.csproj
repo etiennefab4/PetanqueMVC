@@ -63,6 +63,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Competition\CannotAddTeamInLockedCompetition.cs" />
     <Compile Include="Competition\Competition.cs" />
     <Compile Include="Competition\CompetitionService.cs" />
     <Compile Include="Competition\Node.cs" />

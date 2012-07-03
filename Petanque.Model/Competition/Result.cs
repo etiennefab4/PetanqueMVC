@@ -7,7 +7,6 @@ namespace Petanque.Model.Competition
     {
         public Team.Team TeamWin { get; set; }
         public Team.Team TeamLoose { get; set; }
-        public Competition Competition { get; set; }
         public DateTime Date { get; set; }
 
         public Result()

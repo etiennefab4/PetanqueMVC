@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using Petanque.Model.Repository;
 
@@ -25,6 +26,10 @@ namespace Petanque.Model.Competition
             }
         }
 
+        public List<Result> Results { get; set; }
+
+        public bool IsLocked{ get { return Results.Any(); } }
+
         public bool IsCryingCompetion { get; set; }
         public Competition CryingCompetion { get; set; }
 
@@ -36,6 +41,7 @@ namespace Petanque.Model.Competition
 
         protected Competition()
         {
+            Results = new List<Result> {};
             IsCryingCompetion = false;
             InitialTeams = new List<Team.Team>();
             EndNode = new Node { ParentNode = null };
