@@ -31,3 +31,6 @@ _ReSharper.PetanqueMVC/
 # MS Office
 ~$*.docx
 ~$*.doc
+
+.user
+*.user

@@ -1,0 +1,9 @@
+﻿@model Petanque.Web.Models.CompetitionDto
+@{
+    Layout = "../Shared/_Layout.cshtml";
+}
+<h2>
+    Tournoi @Model.Nom
+</h2>
+
+@Html.Partial("PartialNode", Model.Node)

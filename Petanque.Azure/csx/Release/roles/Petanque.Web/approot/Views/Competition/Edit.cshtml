@@ -1,0 +1,31 @@
+﻿@model Petanque.Web.Models.CompetitionDto
+@{
+    ViewBag.Title = "Modifier Concours";
+    Layout = "../Shared/_Layout.cshtml";
+}
+<div>
+    @using (Html.BeginForm("Edit", "Competition", "POST"))
+    {
+        <fieldset>
+            @Html.DisplayFor(x => Model.Nom)
+            @Html.TextBoxFor(x => Model.Nom)
+        </fieldset>
+        @Html.Partial("IndexTeam", Model.TeamDtos)
+        <p>
+            @Html.ActionLink("Add Team", "AddTeamInCompetition", "Team", new { competitionId = Model.Id }, null)
+        </p>
+        <p>
+            @Html.ActionLink("Melanger", "Randomize", "Competition", new { id = Model.Id }, null)
+        </p>
+        <p>
+            @Html.ActionLink("Voir Tournoi", "GetTree", "Competition", new { id = Model.Id }, null)
+        </p>
+        
+        <p>
+            <input type="submit" value="Save" />
+        </p>
+    }
+    
+    
+
+</div>

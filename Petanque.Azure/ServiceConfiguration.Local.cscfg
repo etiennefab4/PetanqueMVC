@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ServiceConfiguration serviceName="Petanque.Azure" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration" osFamily="1" osVersion="*">
+  <Role name="Petanque.Web">
+    <Instances count="1" />
+    <ConfigurationSettings>
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.Enabled" value="true" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountUsername" value="etiennep" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountEncryptedPassword" value="MIIBnQYJKoZIhvcNAQcDoIIBjjCCAYoCAQAxggFOMIIBSgIBADAyMB4xHDAaBgNVBAMME1dpbmRvd3MgQXp1cmUgVG9vbHMCEBgKyeY5l1KORTyJ8t7HxWcwDQYJKoZIhvcNAQEBBQAEggEAirjpGV3U753xUSYE+7gF5n5XP02CmDfARRpJ4MbCexKAYXe3743NWlluHGShHVkS4qcebxP3QlRjATA6xTj5Y0p+HUDc1ZOJeiTD8I22A4gOmhNAfxx9W+s2T2dvQPjq4JZlZxsXEpMEQW5W494EgCr6SS6kVCfEhu0G5otdt7ytmdbVL81ojMje72LktIEKrvVrfgSSxC1ptzz7M6Vj216mgk4s5DvprfdgfoWv2eyHUxi/jcPr9et9Y/RlG9feHDnWyEZjLVCxYRWP685OcECqBIppK3SAXGCQo9H/8euA+jAbpn6BL68MxAeYBVFFA0eQ00plB/iUHYxYLkIj3TAzBgkqhkiG9w0BBwEwFAYIKoZIhvcNAwcECG6XvPsH0J2MgBAXENYMbrA+TN52CC9OxmCv" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountExpiration" value="2013-07-03T23:59:59.0000000+02:00" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteForwarder.Enabled" value="true" />
+    </ConfigurationSettings>
+    <Certificates>
+      <Certificate name="Microsoft.WindowsAzure.Plugins.RemoteAccess.PasswordEncryption" thumbprint="5F9879D01501D6E13A1D2DEDA20BB25299DAAC41" thumbprintAlgorithm="sha1" />
+    </Certificates>
+  </Role>
+</ServiceConfiguration>

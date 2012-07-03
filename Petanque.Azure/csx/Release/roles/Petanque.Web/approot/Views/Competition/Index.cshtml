@@ -1,0 +1,20 @@
+﻿@model System.Collections.Generic.IEnumerable<Petanque.Web.Models.CompetitionDto>
+@{
+    Layout = "../Shared/_Layout.cshtml";
+    ViewBag.Title = "Liste Competitions";
+    
+}
+<table class="dataTable">
+    @foreach (var competitionDto in Model)
+    {
+        <tr>
+            <td>@competitionDto.Nom
+            </td>
+            <td>@Html.ActionLink("Edit", "Edit", new { competitionDto.Id })
+            </td>
+        </tr> 
+    }
+</table>
+<p>
+    @Html.ActionLink("Add Competition", "Create")
+</p>

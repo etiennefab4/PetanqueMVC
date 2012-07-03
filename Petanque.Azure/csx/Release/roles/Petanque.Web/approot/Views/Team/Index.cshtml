@@ -1,0 +1,14 @@
+﻿@using System.Activities.Expressions
+@using MvcContrib.UI.InputBuilder.Views
+@model System.Collections.Generic.IEnumerable<Petanque.Web.Models.TeamDto>
+@{
+    Layout = "../Shared/_Layout.cshtml";
+}
+<h2>
+    Index Teams</h2>
+<div>
+    @Html.Partial("IndexTeam", Model)
+    <p>
+        @Html.ActionLink("Add Team", "Create")
+    </p>
+</div>
