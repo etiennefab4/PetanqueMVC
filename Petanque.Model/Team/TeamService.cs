@@ -8,12 +8,10 @@ namespace Petanque.Model.Team
     public class TeamService
     {
         private readonly MongoRepository<Team> _teamRepo;
-        private readonly Competition.CompetitionService _competitionService;
 
-        public TeamService(MongoRepository<Team> teamRepo, CompetitionService competitionService)
+        public TeamService(MongoRepository<Team> teamRepo)
         {
             _teamRepo = teamRepo;
-            _competitionService = competitionService;
         }
 
         public IEnumerable<Team> GetAllTeams()
@@ -31,11 +29,19 @@ namespace Petanque.Model.Team
             return _teamRepo.Find(id);
         }
 
-        public void CreateTeamInCompetion(Team team, Competition.Competition competition)
+        public void UpdatePlayedGame(Result result)
         {
-            competition.AddTeam(team);
-            _competitionService.Save(competition);
-            
+            if (result.TeamLoose != null)
+            {
+                UpdatePlayedGame(result.TeamLoose);
+            }
+            UpdatePlayedGame(result.TeamWin);
         }
+
+         public void UpdatePlayedGame(Team team)
+         {
+             team.GamePlayed++;
+             Save(team);
+         }
     }
 }

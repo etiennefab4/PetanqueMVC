@@ -60,7 +60,7 @@ namespace Petanque.Web.Controllers
                 if (!string.IsNullOrEmpty(teamDto.CompetitionId))
                 {
                     var competition = _competitionService.Find(teamDto.CompetitionId);
-                    _teamService.CreateTeamInCompetion(team, competition);
+                    _competitionService.CreateTeamInCompetion(team, competition);
                     return RedirectToAction("AddTeamInCompetition", "Team", new { competitionId = teamDto.CompetitionId });
                 }
                 

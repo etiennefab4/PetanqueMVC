@@ -2,16 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Petanque.Model.Repository;
+using Petanque.Model.Team;
 
 namespace Petanque.Model.Competition
 {
     public class NodeService
     {
         private readonly MongoRepository<Result> _resultRepo;
+        private readonly TeamService _teamService;
 
-        public NodeService(MongoRepository<Result> resultRepo)
+        public NodeService(MongoRepository<Result> resultRepo, TeamService teamService)
         {
             _resultRepo = resultRepo;
+            _teamService = teamService;
         }
 
         public Node ApplyResultOnCompetition(Competition competition, Node nodeTree)
@@ -24,14 +27,17 @@ namespace Petanque.Model.Competition
 
             Node nodeOfTeamWin = SearchNodeOfTeam(teamWin, rootNode);
 
-            if(nodeOfTeamWin.ParentNode == null)
+            if (nodeOfTeamWin.ParentNode == null)
             {
                 throw new ResultImpossibleException();
             }
 
             Node nodeOfTeamLoose = nodeOfTeamWin.ParentNode.BottomNode == nodeOfTeamWin ? nodeOfTeamWin.ParentNode.TopNode : nodeOfTeamWin.ParentNode.BottomNode;
 
-            var result = new Result { TeamWin = teamWin, TeamLoose = nodeOfTeamLoose.Team};
+            var result = new Result { TeamWin = teamWin, TeamLoose = nodeOfTeamLoose.Team };
+
+            _teamService.UpdatePlayedGame(result);
+
             _resultRepo.Save(result);
             return result;
         }
@@ -48,12 +54,52 @@ namespace Petanque.Model.Competition
                 listTeamInFirstLevel.Add(PickATeam(tmpTeams));
             }
 
-            var nodeTree = CreateNode(listTeamInFirstLevel, competition, tmpTeams, null, 0, competition.Depth - 1);
-            nodeTree.CompetitionId = competition.Id;
+            var nodeTree = CreateNode(listTeamInFirstLevel, tmpTeams, competition, null, 0, competition.Depth - 1);
+            AutoPlayForMissingTeam(nodeTree);
             return ApplyResultOnCompetition(competition, nodeTree);
         }
 
         #region private
+
+        private void CheckTeamWithoutOpponent(Node node)
+        {
+            if (node == null) return;
+            if (node.BottomNode == null || node.BottomNode.Team == null)
+            {
+                if(node.BottomNode != null && node.BottomNode.Team == null)
+                {
+                    CheckTeamWithoutOpponent(node.BottomNode);
+                    return;
+                }
+                if (node.TopNode != null && node.TopNode.Team != null)
+                {
+                    node.Team = node.TopNode.Team;
+                }
+            }
+            else if (node.TopNode == null || node.TopNode.Team == null)
+            {
+                if (node.TopNode != null && node.TopNode.Team == null)
+                {
+                    CheckTeamWithoutOpponent(node.TopNode);
+                    return;
+                }
+                node.Team = node.BottomNode.Team;
+            }
+        }
+
+        private void AutoPlayForMissingTeam(Node rootNode)
+        {
+            if (rootNode == null) return;
+
+            AutoPlayForMissingTeam(rootNode.BottomNode);
+            AutoPlayForMissingTeam(rootNode.TopNode);
+
+            CheckTeamWithoutOpponent(rootNode.BottomNode);
+            CheckTeamWithoutOpponent(rootNode.TopNode);
+        }
+
+
+
         private Node SearchNodeOfTeam(Team.Team team, Node rootNode)
         {
             if (rootNode.Team != null && rootNode.Team.Id == team.Id)
@@ -96,7 +142,7 @@ namespace Petanque.Model.Competition
         private Node ApplyResultOnCompetition(Result result, Node rootNode)
         {
             var node = SearchNodeOfTeam(result.TeamWin, rootNode);
-            if(node.ParentNode.Team == null)
+            if (node.ParentNode.Team == null)
             {
                 node.ParentNode.Team = result.TeamWin;
             }
@@ -111,7 +157,7 @@ namespace Petanque.Model.Competition
             return teamPicked;
         }
 
-        private Node CreateNode(List<Team.Team> listTeamInFirstLevel, Competition competition, List<Team.Team> teams, Node parentNode, int levelTree, int depth)
+        private Node CreateNode(List<Team.Team> listTeamInFirstLevel, List<Team.Team> teams, Competition competition, Node parentNode, int levelTree, int depth)
         {
             if (levelTree > depth)
                 return null;
@@ -137,8 +183,8 @@ namespace Petanque.Model.Competition
                 node.Team = team;
             }
 
-            node.TopNode = CreateNode(listTeamInFirstLevel, competition, teams, node, levelTree + 1, depth);
-            node.BottomNode = CreateNode(listTeamInFirstLevel, competition, teams, node, levelTree + 1, depth);
+            node.TopNode = CreateNode(listTeamInFirstLevel, teams, competition, node, levelTree + 1, depth);
+            node.BottomNode = CreateNode(listTeamInFirstLevel, teams, competition, node, levelTree + 1, depth);
             return node;
         }
         #endregion

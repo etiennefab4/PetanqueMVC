@@ -58,11 +58,28 @@ namespace Petanque.Model.Competition
         {
             var rootNode = _nodeService.GetTree(competition);
             var result = _nodeService.CreateResult(rootNode, team);
-            
+
+            if(!competition.IsCryingCompetion)
+            {
+                if(team.CanSendToCryingCompetetion)
+                {
+                    competition.CryingCompetion.AddTeam(team);
+                    Save(competition.CryingCompetion);
+                }
+            }
+
             competition.Results.Add(result);
             Save(competition);
             
         }
+
+        public void CreateTeamInCompetion(Team.Team team, Competition competition)
+        {
+            competition.AddTeam(team);
+            Save(competition);
+        }
+
+
 
         public void SendToCryingCompetition(Competition competition, Team.Team team)
         {
@@ -73,6 +90,16 @@ namespace Petanque.Model.Competition
         public void Delete(string  id)
         {
             _competitionRepo.Delete(id);
+        }
+
+        public Competition CreateCompetition(int nbTeam)
+        {
+            var competition = new Competition("debug", false);
+            for (int i = 0; i < nbTeam; i++)
+            {
+                competition.AddTeam(new Team.Team("team-" + i));
+            }
+            return competition;
         }
     }
 }

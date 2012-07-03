@@ -95,6 +95,19 @@ namespace Petanque.Web.Controllers
         }
 
 
+        public ActionResult GetTreeDebug(int nbTeam)
+        {
+            var competition = _competitionService.CreateCompetition(nbTeam);
+            var node = _nodeService.GetTree(competition);
+            var competitionDto = new CompetitionDto
+            {
+                Id = competition.Id,
+                Nom = competition.Name,
+                Node = node
+            };
+            return View("Tree", competitionDto);
+        }
+
 
         //
         // POST: /Competition/Create

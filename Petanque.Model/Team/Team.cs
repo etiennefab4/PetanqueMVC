@@ -5,18 +5,23 @@ namespace Petanque.Model.Team
     public class Team : AbstractMongoEntity
     {
         public string Name { get;  set; }
-
-        public bool IsFakeTeam { get; protected set; }
+        public int GamePlayed { get; set; }
+        public bool CanSendToCryingCompetetion
+        {
+            get
+            {
+                return GamePlayed <= 2;
+            }
+        }
 
         public Team(string name)
         {
             Name = name;
-            IsFakeTeam = false;
         }
 
         public Team()
         {
-            IsFakeTeam = true;
+            GamePlayed = 0;
         }
     }
 }
