@@ -4,7 +4,7 @@
     <AzureCredentials>PtankCred</AzureCredentials>
     <AzureHostedServiceName>ptank</AzureHostedServiceName>
     <AzureHostedServiceLabel>ptank</AzureHostedServiceLabel>
-    <AzureSlot>Production</AzureSlot>
+    <AzureSlot>Staging</AzureSlot>
     <AzureEnableIntelliTrace>False</AzureEnableIntelliTrace>
     <AzureEnableProfiling>False</AzureEnableProfiling>
     <AzureEnableWebDeploy>False</AzureEnableWebDeploy>
