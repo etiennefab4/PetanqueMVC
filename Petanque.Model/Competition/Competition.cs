@@ -34,17 +34,14 @@ namespace Petanque.Model.Competition
         {
             get
             {
-                if (IsCryingCompetion)
+                if (!InitialTeams.Any())
                 {
                     int remain;
                     int nbTeamEliminateFirstGame = Math.DivRem(NbTeamMainCompetition, 2, out remain) + remain;
                     int nbTeamEliminateSecondGame = Math.DivRem(NbTeamMainCompetition - nbTeamEliminateFirstGame, 2, out remain) + remain;
                     return nbTeamEliminateFirstGame + nbTeamEliminateSecondGame;
                 }
-                else
-                {
-                    return InitialTeams.Count;
-                }
+                return InitialTeams.Count;
             }
         }
 

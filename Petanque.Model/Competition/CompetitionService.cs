@@ -89,6 +89,7 @@ namespace Petanque.Model.Competition
         {
             competition.InitialTeams.Where(x => x.IsTeamToReplace).ToList().RemoveAt(0);
             competition.AddTeam(team);
+            Save(competition);
         }
 
         public void CreateTeamInCompetion(Team.Team team, Competition competition)
