@@ -41,6 +41,8 @@ namespace Petanque.Web
                         cm.MapProperty(c => c.InitialTeams);
                         cm.MapProperty(c => c.Name);
                         cm.MapProperty(c => c.Results);
+                        cm.MapProperty(c => c.IsCryingCompetion);
+                        cm.MapProperty(c => c.CryingCompetitionId);
                     }
                 );
 

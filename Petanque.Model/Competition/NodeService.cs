@@ -9,12 +9,14 @@ namespace Petanque.Model.Competition
     public class NodeService
     {
         private readonly MongoRepository<Result> _resultRepo;
+        private readonly MongoRepository<Competition> _competitionRepo;
         private readonly TeamService _teamService;
 
-        public NodeService(MongoRepository<Result> resultRepo, TeamService teamService)
+        public NodeService(MongoRepository<Result> resultRepo, TeamService teamService, MongoRepository<Competition> competitionRepo)
         {
             _resultRepo = resultRepo;
             _teamService = teamService;
+            _competitionRepo = competitionRepo;
         }
 
         public Node ApplyResultOnCompetition(Competition competition, Node nodeTree)
@@ -44,6 +46,7 @@ namespace Petanque.Model.Competition
 
         public Node GetTree(Competition competition)
         {
+            
             var tmpTeams = new List<Team.Team>();
             tmpTeams.AddRange(competition.InitialTeams);
             var nbTeamInFirstLevel = CalculateNbTeamInFirstLevel(competition.InitialTeams.Count(), competition.Depth);
@@ -66,7 +69,7 @@ namespace Petanque.Model.Competition
             if (node == null) return;
             if (node.BottomNode == null || node.BottomNode.Team == null)
             {
-                if(node.BottomNode != null && node.BottomNode.Team == null)
+                if (node.BottomNode != null && node.BottomNode.Team == null)
                 {
                     CheckTeamWithoutOpponent(node.BottomNode);
                     return;

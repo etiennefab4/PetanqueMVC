@@ -1,4 +1,5 @@
-﻿using Petanque.Model.Tools.Extension;
+﻿using MongoDB.Bson;
+using Petanque.Model.Tools.Extension;
 using System.Linq;
 using System.Collections.Generic;
 using Petanque.Model.Repository;
@@ -23,9 +24,9 @@ namespace Petanque.Model.Competition
             return competition;
         }
 
-        public IEnumerable<Competition> GetAll()
+        public IEnumerable<Competition> GetMainCompetition()
         {
-            return _competitionRepo.QueryAll().ToArray();
+            return _competitionRepo.QueryAll().Where(x => !x.IsCryingCompetion).ToArray();
         }
 
         public void Save(Competition competition)
@@ -34,6 +35,11 @@ namespace Petanque.Model.Competition
         }
 
         public Competition Find(string id)
+        {
+            return _competitionRepo.Find(id);
+        }
+
+        public Competition Find(ObjectId id)
         {
             return _competitionRepo.Find(id);
         }
@@ -63,8 +69,14 @@ namespace Petanque.Model.Competition
             {
                 if(team.CanSendToCryingCompetetion)
                 {
-                    competition.CryingCompetion.AddTeam(team);
-                    Save(competition.CryingCompetion);
+                    var cryingCompetition = GetCryingCompetition(competition);
+
+                    if (result.TeamLoose != null)
+                    {
+                        AddTeamInCryingCompetition(cryingCompetition, result.TeamLoose);
+                    }
+                    
+                    Save(cryingCompetition);
                 }
             }
 
@@ -73,19 +85,18 @@ namespace Petanque.Model.Competition
             
         }
 
+        void AddTeamInCryingCompetition(Competition competition, Team.Team team)
+        {
+            competition.InitialTeams.Where(x => x.IsTeamToReplace).ToList().RemoveAt(0);
+            competition.AddTeam(team);
+        }
+
         public void CreateTeamInCompetion(Team.Team team, Competition competition)
         {
             competition.AddTeam(team);
             Save(competition);
         }
 
-
-
-        public void SendToCryingCompetition(Competition competition, Team.Team team)
-        {
-            //_nodeService.CreateResult(null, null)
-            //competition.AddTeam(team);
-        }
 
         public void Delete(string  id)
         {
@@ -97,9 +108,45 @@ namespace Petanque.Model.Competition
             var competition = new Competition("debug", false);
             for (int i = 0; i < nbTeam; i++)
             {
-                competition.AddTeam(new Team.Team("team-" + i));
+                competition.AddTeam(new Team.Team("team-" + i, false));
             }
             return competition;
+        }
+
+        public Competition CreateCompetition(string name)
+        {
+            var competition = new Competition(name, false);
+            var cryingCompetition = new Competition(name, true);
+            Save(cryingCompetition);
+            competition.CryingCompetitionId = cryingCompetition.ObjectId.ToString();
+            Save(competition);
+            return competition;
+        }
+
+        public Competition GetCryingCompetition(Competition competition)
+        {
+            return Find(competition.CryingCompetitionId);
+        }
+
+        public Competition GetMainCompetition(Competition cryingCompetition)
+        {
+            return
+                _competitionRepo.QueryAll().FirstOrDefault(x => x.CryingCompetitionId == cryingCompetition.Id);
+        }
+
+        public void PopulateCryingCompetition(Competition competition)
+        {
+            if (competition.IsCryingCompetion && !competition.InitialTeams.Any())
+            {
+                var mainCompetition = GetMainCompetition(competition);
+                competition.NbTeamMainCompetition = mainCompetition.NumberOfTeam;
+                for (int i = 0; i < competition.NumberOfTeam; i++)
+                {
+                    var team = new Team.Team("A remplacer", true);
+                    competition.InitialTeams.Add(team);
+                    _competitionRepo.Save(competition);
+                }
+            }
         }
     }
 }

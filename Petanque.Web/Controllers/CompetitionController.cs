@@ -25,8 +25,8 @@ namespace Petanque.Web.Controllers
 
         public ActionResult Index()
         {
-            var competitions = _competitionService.GetAll();
-            var competitionDtos = competitions.Select(x => new CompetitionDto() { Id = x.Id, Nom = x.Name ?? "no name" });
+            var competitions = _competitionService.GetMainCompetition();
+            var competitionDtos = competitions.Select(x => new CompetitionDto { Id = x.Id, Nom = x.Name ?? "no name" });
             return View(competitionDtos);
         }
 
@@ -84,12 +84,20 @@ namespace Petanque.Web.Controllers
         public ActionResult GetTree(string id)
         {
             var competition = _competitionService.Find(id);
+
+            if (competition.IsCryingCompetion && competition.InitialTeams.Count == 0)
+            {
+                _competitionService.PopulateCryingCompetition(competition);
+            }
+
             var node = _nodeService.GetTree(competition);
+
             var competitionDto = new CompetitionDto
                                      {
                                          Id = competition.Id,
                                          Nom = competition.Name,
-                                         Node = node
+                                         Node = node,
+                                         CryingCompetitionId = competition.CryingCompetitionId
                                      };
             return View("Tree", competitionDto);
         }
@@ -117,8 +125,7 @@ namespace Petanque.Web.Controllers
         {
             try
             {
-                var competition = new Competition(competitionDto.Nom, false);
-                _competitionService.Save(competition);
+                var competition = _competitionService.CreateCompetition(competitionDto.Nom);
 
                 return RedirectToAction("AddTeamInCompetition", "Team", new { competitionId = competition.Id });
             }
@@ -176,15 +183,5 @@ namespace Petanque.Web.Controllers
             return RedirectToAction("Index");
         }
 
-
-
-        public ActionResult GoCryingCompetition(string id, string teamId)
-        {
-            var team = _teamService.Find(teamId);
-            var competition = _competitionService.Find(id);
-            _competitionService.SendToCryingCompetition(competition, team);
-
-            return RedirectToAction("GetTree", "Competition", new { id });
-        }
     }
 }

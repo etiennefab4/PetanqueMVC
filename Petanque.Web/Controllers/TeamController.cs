@@ -55,7 +55,7 @@ namespace Petanque.Web.Controllers
         {
             try
             {
-                var team = new Team(teamDto.Nom);
+                var team = new Team(teamDto.Nom, false);
                 _teamService.Save(team);
                 if (!string.IsNullOrEmpty(teamDto.CompetitionId))
                 {
@@ -143,7 +143,7 @@ namespace Petanque.Web.Controllers
 
             for (int i = 0; i < nbTeam; i++)
             {
-                var team = new Team(string.Format("{0}-Team{1}",competition.Name, i));
+                var team = new Team(string.Format("{0}-Team{1}",competition.Name, i), false);
                 _teamService.Save(team);
                 _competitionService.AddTeam(competition, team);
             }
