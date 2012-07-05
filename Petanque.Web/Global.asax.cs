@@ -44,6 +44,7 @@ namespace Petanque.Web
                         cm.MapProperty(c => c.IsCryingCompetion);
                         cm.MapProperty(c => c.CryingCompetitionId);
                         cm.MapProperty(c => c.NbTeamMainCompetition);
+                        cm.MapProperty(c => c.IsLocked);
                     }
                 );
 
