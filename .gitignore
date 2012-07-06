@@ -1,4 +1,8 @@
-﻿# VS noise
+﻿bin/
+obj/
+csx/
+
+# VS noise
 *.pdb
 *.dll
 *.exe
@@ -9,9 +13,7 @@
 *.cache
 *.log
 *.rdl.data
-bin/
-obj/
-csx/
+
 
 # windows noise
 Thumbs.db
