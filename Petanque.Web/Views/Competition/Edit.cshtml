@@ -15,7 +15,7 @@
             @Html.ActionLink("Add Team", "AddTeamInCompetition", "Team", new { competitionId = Model.Id }, null)
         </p>
         <p>
-            @Html.ActionLink("Melanger", "Randomize", "Competition", new { id = Model.Id }, null)
+            @Html.ActionLink("Démarrer Concours", "StartCompetition", "Competition", new { id = Model.Id }, null)
         </p>
         <p>
             @Html.ActionLink("Voir Tournoi", "GetTree", "Competition", new { id = Model.Id }, null)

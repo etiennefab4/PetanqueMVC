@@ -10,6 +10,7 @@ namespace Petanque.Model.Competition
     {
 
         public int NbTeamMainCompetition { get; set; }
+        
         public string CryingCompetitionId { get; set; }
 
         public int Depth
@@ -47,7 +48,7 @@ namespace Petanque.Model.Competition
 
         public List<Result> Results { get; set; }
 
-        public bool IsLocked { get { return Results.Any(); } }
+        public bool IsLocked { get; set; }
 
         public bool IsCryingCompetion { get; set; }
 

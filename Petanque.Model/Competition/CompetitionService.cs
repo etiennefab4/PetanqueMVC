@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using System;
+using MongoDB.Bson;
 using Petanque.Model.Tools.Extension;
 using System.Linq;
 using System.Collections.Generic;
@@ -44,6 +45,12 @@ namespace Petanque.Model.Competition
             return _competitionRepo.Find(id);
         }
 
+        public void Lock(Competition competition)
+        {
+            competition.IsLocked = true;
+            Save(competition); 
+        }
+
         public void Randomize(Competition competition)
         {
             competition.Shuffle();
@@ -87,9 +94,18 @@ namespace Petanque.Model.Competition
 
         void AddTeamInCryingCompetition(Competition competition, Team.Team team)
         {
-            competition.InitialTeams.Where(x => x.IsTeamToReplace).ToList().RemoveAt(0);
-            competition.AddTeam(team);
-            Save(competition);
+            var teamToReplace = competition.InitialTeams.Where(x => x.IsTeamToReplace).FirstOrDefault();
+            if(teamToReplace != null)
+            {
+                competition.InitialTeams.Remove(teamToReplace);
+                competition.AddTeam(team);
+                Save(competition);  
+            }
+            else
+            {
+                throw new Exception("pas possible normalement, learn to code noob");
+            }
+           
         }
 
         public void CreateTeamInCompetion(Team.Team team, Competition competition)
@@ -141,7 +157,8 @@ namespace Petanque.Model.Competition
             {
                 var mainCompetition = GetMainCompetition(competition);
                 competition.NbTeamMainCompetition = mainCompetition.NumberOfTeam;
-                for (int i = 0; i < competition.NumberOfTeam; i++)
+                int nbTeamToAdd = competition.NumberOfTeam;
+                for (int i = 0; i < nbTeamToAdd; i++)
                 {
                     var team = new Team.Team("A remplacer", true);
                     competition.InitialTeams.Add(team);

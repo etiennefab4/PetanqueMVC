@@ -68,11 +68,16 @@ namespace Petanque.Web.Controllers
         {
             var team = _teamService.Find(teamId);
             var competition = _competitionService.Find(id);
+            if (!competition.IsLocked && !competition.IsCryingCompetion)
+            {
+                return RedirectToAction("GetTree", "Competition", new { id });
+            }
 
             try
             {
                 _competitionService.AddResult(competition, team);
             }
+            //TODO fix ça un jour
             catch (Exception)
             {
 
@@ -81,14 +86,19 @@ namespace Petanque.Web.Controllers
             return RedirectToAction("GetTree", "Competition", new { id });
         }
 
+        public ActionResult StartCompetition(string id)
+        {
+            var mainCompetition = _competitionService.GetCompetition(id);
+            var cryingCompetition = _competitionService.GetCryingCompetition(mainCompetition);
+            _competitionService.Randomize(mainCompetition);
+            _competitionService.PopulateCryingCompetition(cryingCompetition);
+            _competitionService.Lock(mainCompetition);
+
+            return RedirectToAction("GetTree", new { id });
+        }
         public ActionResult GetTree(string id)
         {
             var competition = _competitionService.Find(id);
-
-            if (competition.IsCryingCompetion && competition.InitialTeams.Count == 0)
-            {
-                _competitionService.PopulateCryingCompetition(competition);
-            }
 
             var node = _nodeService.GetTree(competition);
 
