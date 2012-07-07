@@ -204,7 +204,7 @@ h4 em { font-style: normal; }
 h1 { font-size: 6em; line-height: 1.5; text-align: center; cursor: default; }
 h1:hover { color: #e16734; }
 
-body { background: #232927; color: #e3d7bf; text-align: center; font: 300 12px/18px "HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue", sans-serif; }
+body { background: #232927; color: #e3d7bf; font: 300 16px/18px "HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue", sans-serif; }
 
 a, a:visited { color: #e3d7bf; text-decoration: none; } 
 #body ul a, a:hover, a:focus, #body p a, .disqus-wrapper a, p.lang a { color: #e16734; }
@@ -306,6 +306,15 @@ margin-right: 35px;
     margin-top: 20px;
 }
 .menu a{ font-size: 1.5em;}
+
+.well{ background-color: #4D4440;}
+.form-actions{ background-color: #232927; }
+
+h1{ margin-top: 25px;margin-bottom: 25px;}
+h2{ text-align: center;}
+
+form{ width: 600px;margin: auto;}
+.form-actions{ border: none;}
 
 
 

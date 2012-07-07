@@ -6,6 +6,7 @@ namespace Petanque.Model.Team
     {
         public string Name { get;  set; }
         public int GamePlayed { get; set; }
+        public int Number { get; set; }
         public bool IsTeamToReplace { get; set; }
 
         public bool CanSendToCryingCompetetion
@@ -16,10 +17,11 @@ namespace Petanque.Model.Team
             }
         }
 
-        public Team(string name, bool isTeamToReplace):this()
+        public Team(string name, bool isTeamToReplace, int number):this()
         {
             Name = name;
             IsTeamToReplace = isTeamToReplace;
+            Number = number;
         }
 
         public Team()

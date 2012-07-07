@@ -125,7 +125,7 @@ namespace Petanque.Model.Competition
             var competition = new Competition("debug", false);
             for (int i = 0; i < nbTeam; i++)
             {
-                competition.AddTeam(new Team.Team("team-" + i, false));
+                competition.AddTeam(new Team.Team("team-" + i, false, i + 1));
             }
             return competition;
         }
@@ -160,11 +160,16 @@ namespace Petanque.Model.Competition
                 int nbTeamToAdd = competition.NumberOfTeam;
                 for (int i = 0; i < nbTeamToAdd; i++)
                 {
-                    var team = new Team.Team("A remplacer", true);
+                    var team = new Team.Team("A remplacer", true, 0);
                     competition.InitialTeams.Add(team);
                     _competitionRepo.Save(competition);
                 }
             }
+        }
+
+        public int GetNextNumber(Competition competition)
+        {
+            return competition.InitialTeams.Any() ? competition.InitialTeams.Max(x => x.Number) + 1 : 1;
         }
     }
 }

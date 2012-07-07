@@ -1,0 +1,4 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<publishData>
+  <publishProfile publishUrl="https://44cfd00a3ff648c9b5c062e79a673d39.cloudapp.net:8172/MsDeploy.axd" deleteExistingFiles="False" ftpAnonymousLogin="False" ftpPassiveMode="True" msdeploySite="Petanque.Web_IN_0_Web" msdeploySiteID="" msdeployRemoteSitePhysicalPath="" msdeployAllowUntrustedCertificate="True" msdeploySkipExtraFilesOnServer="True" msdeployMarkAsApp="False" profileName="ptank - Staging" publishMethod="MSDeploy" replaceMatchingFiles="True" userName="etiennep" savePWD="False" userPWD="" SelectedForPublish="True" />
+</publishData>

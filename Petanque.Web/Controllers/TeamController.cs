@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
-using System.Web.Routing;
 using Petanque.Model.Competition;
 using Petanque.Model.Team;
 using Petanque.Web.Models;
@@ -38,14 +37,7 @@ namespace Petanque.Web.Controllers
             return View();
         }
 
-        //
-        // GET: /Team/Create
-
-        public ActionResult Create()
-        {
-            var teamDto = new TeamDto();
-            return View(teamDto);
-        }
+       
 
         //
         // POST: /Team/Create
@@ -55,12 +47,13 @@ namespace Petanque.Web.Controllers
         {
             try
             {
-                var team = new Team(teamDto.Nom, false);
+                var team = new Team(teamDto.Nom, false, teamDto.Number);
                 _teamService.Save(team);
                 if (!string.IsNullOrEmpty(teamDto.CompetitionId))
                 {
                     var competition = _competitionService.Find(teamDto.CompetitionId);
                     _competitionService.CreateTeamInCompetion(team, competition);
+
                     return RedirectToAction("AddTeamInCompetition", "Team", new { competitionId = teamDto.CompetitionId });
                 }
                 
@@ -130,8 +123,12 @@ namespace Petanque.Web.Controllers
 
         public ActionResult AddTeamInCompetition(string competitionId)
         {
-            var teamDto = new TeamDto()
+            var competition = _competitionService.Find(competitionId);
+            var number = _competitionService.GetNextNumber(competition);
+                
+                var teamDto = new TeamDto()
                               {
+                                  Number = number,
                                   CompetitionId = competitionId
                               };
             return View("Create", teamDto);
@@ -143,7 +140,7 @@ namespace Petanque.Web.Controllers
 
             for (int i = 0; i < nbTeam; i++)
             {
-                var team = new Team(string.Format("{0}-Team{1}",competition.Name, i), false);
+                var team = new Team(string.Format("{0}-Team{1}",competition.Name, i), false, i + 1);
                 _teamService.Save(team);
                 _competitionService.AddTeam(competition, team);
             }

@@ -57,7 +57,7 @@ namespace Petanque.Test
         [Test]
         public void TestRepository()
         {
-            var teams = new List<Team> { new Team("Tom", false), new Team("Olive", false) };
+            var teams = new List<Team> { new Team("Tom", false, 1), new Team("Olive", false, 2) };
             var repo = new MongoRepository<Team>(_db);
             foreach (var t in teams)
             {

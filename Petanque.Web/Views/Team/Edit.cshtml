@@ -1,27 +1,27 @@
 ﻿@model Petanque.Web.Models.TeamDto
-
 @{
     Layout = "../Shared/_Layout.cshtml";
+    ViewBag.Title = "Editer équipe";
 }
-
-<!DOCTYPE html>
-
-<html>
-    <head>
-        <title>Edit Team</title>
-    </head>
-    <body>
-        <div>
-              @using (Html.BeginForm("Edit", "Team","POST"))
-        {
-            <fieldset>
-                @Html.DisplayFor(x => x.Nom)
-                @Html.TextBoxFor(x => x.Nom)
-            </fieldset>
-             <p>
-               <input type="submit" value="Save" />
-           </p>
-        }
-        </div>
-    </body>
-</html>
+<div>
+    @using (Html.BeginForm("Edit", "Team", FormMethod.Post, new {@class = "well"}))
+    {
+        <fieldset>
+            <div>
+                @Html.LabelFor(x => x.Number)
+                @Html.DisplayFor(x => x.Number)
+                @Html.HiddenFor(x => x.Number)
+            </div>
+            <div>
+                @Html.LabelFor(x => Model.Nom)
+                @Html.TextBoxFor(x => Model.Nom)
+            </div>
+            <div>
+                @Html.HiddenFor(x => x.CompetitionId)
+            </div>
+        </fieldset>
+        <p>
+            <input type="submit" value="Save" />
+        </p>
+    }
+</div>

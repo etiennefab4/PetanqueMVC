@@ -46,7 +46,7 @@ namespace Petanque.Test
     {
         public static List<Team> GetCollectionOfTeam()
         {
-            return new List<Team> { new Team("Tom", false), new Team("Olive", false) };
+            return new List<Team> { new Team("Tom", false, 1), new Team("Olive", false, 2) };
         }
 
         public static List<Team> GetTeams(int nb)
@@ -54,7 +54,7 @@ namespace Petanque.Test
             var teams = new List<Team>();
             for (int i = 0; i < nb; i++)
             {
-                teams.Add(new Team(RandomString(15, true), false));
+                teams.Add(new Team(RandomString(15, true), false, i + 1));
             }
             return teams;
         }

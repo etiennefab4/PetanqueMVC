@@ -33,22 +33,10 @@
             </div>
         </div>
     </div>
-    <div id="container" dir="ltr" class="container">
-        <div id="header">
-            <div class="menu">
-                <ul>
-                    <li>@Html.ActionLink("Concours", "Index", "Competition")</li>
-                </ul>
-            </div>
-            <h1>@Html.ActionLink("P-TANK", "Index", "Home")</h1>
-            <h2>@ViewBag.Title</h2>
-        </div>
-        <div id="body">
-            @RenderBody()
-        </div>
-        <footer>
-
-            </footer>
+    <div class="container">
+        <h1>@Html.ActionLink("P-TANK", "Index", "Home")</h1>
+        <h2>@ViewBag.Title</h2>
+        @RenderBody()
     </div>
     <script src="@Url.Content("~/Scripts/plugins.js")"></script>
     <script src="@Url.Content("~/Scripts/script.js")"></script>
