@@ -2,15 +2,13 @@
 <p>
     Nombre equipes : @Model.Count()
 </p>
-<table class="dataTable">
+<table class="table">
+    
     @foreach (var teamDto in Model)
     {
-        <div class="row">
-            <div class="span3 offset3">
-            </div>
-            <div class="span5">@teamDto.Nom</div>
-            <div class="span2">@Html.ActionLink("Edit", "Edit", "Team", new { id = teamDto.Id }, null)</div>
-            <div class="span3 offset3"></div>
-        </div>
+        <tr>
+            <td>@teamDto.Nom</td>
+            <td>@Html.ActionLink("Edit", "Edit", "Team", new { id = teamDto.Id }, null)</td>
+        </tr>
     }
 </table>

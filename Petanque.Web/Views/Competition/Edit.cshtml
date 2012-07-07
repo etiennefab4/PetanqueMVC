@@ -1,14 +1,19 @@
-﻿@model Petanque.Web.Models.CompetitionDto
+﻿@using Petanque.Web.Extensions
+@model Petanque.Web.Models.CompetitionDto
 @{
     ViewBag.Title = "Modifier Concours";
     Layout = "../Shared/_Layout.cshtml";
 }
 <div>
-    @using (Html.BeginForm("Edit", "Competition", "POST"))
+    @using (Html.BeginForm("Edit", "Competition", FormMethod.Post, new { @class = "form-horizontal" }))
     {
         <fieldset>
-            @Html.DisplayFor(x => Model.Nom)
-            @Html.TextBoxFor(x => Model.Nom)
+            <div class="control-group">
+                @Html.LabelFor(x => x.Nom, new { @class = "control-label" })
+                <div class="controls">
+                    @Html.TextBoxFor(x => x.Nom, new { @class = "input-xlarge" })
+                </div>
+            </div>
         </fieldset>
         @Html.Partial("IndexTeam", Model.TeamDtos)
         <p>

@@ -99,7 +99,11 @@ namespace Petanque.Web.Controllers
         public ActionResult GetTree(string id)
         {
             var competition = _competitionService.Find(id);
-
+            Competition mainCompetition = null;
+            if(competition.IsCryingCompetion)
+            {
+                mainCompetition = _competitionService.GetMainCompetition(competition);
+            }
             var node = _nodeService.GetTree(competition);
 
             var competitionDto = new CompetitionDto
@@ -107,7 +111,8 @@ namespace Petanque.Web.Controllers
                                          Id = competition.Id,
                                          Nom = competition.Name,
                                          Node = node,
-                                         CryingCompetitionId = competition.CryingCompetitionId
+                                         IsCryingCompetion = competition.IsCryingCompetion,
+                                         AffiliateCompetition = !competition.IsCryingCompetion ?  competition.CryingCompetitionId : mainCompetition.Id
                                      };
             return View("Tree", competitionDto);
         }

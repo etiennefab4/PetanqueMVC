@@ -315,6 +315,10 @@ h2{ text-align: center;}
 
 form{ width: 600px;margin: auto;}
 .form-actions{ border: none;}
-
+.table tbody tr:hover td, .table tbody tr:hover th {
+background-color: #443C3C;
+}
+.table{ width: 600px;margin: auto;}
+p{ width: 600px;margin-left: auto;margin-right: auto;margin-top: 15px;}
 
 
