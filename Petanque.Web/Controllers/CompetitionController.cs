@@ -64,7 +64,7 @@ namespace Petanque.Web.Controllers
             return RedirectToAction("Edit", "Competition", new { id });
         }
 
-        public ActionResult SetWinner(string id, string teamId)
+        public ActionResult  SetWinner(string id, string teamId)
         {
             var team = _teamService.Find(teamId);
             var competition = _competitionService.Find(id);
@@ -84,6 +84,27 @@ namespace Petanque.Web.Controllers
             }
 
             return RedirectToAction("GetTree", "Competition", new { id });
+        }
+
+        public ActionResult SetWinnerAjax(string id, string teamId)
+        {
+            var team = _teamService.Find(teamId);
+            var competition = _competitionService.Find(id);
+            if (!competition.IsLocked && !competition.IsCryingCompetion)
+            {
+                return RedirectToAction("GetTree", "Competition", new { id });
+            }
+
+            try
+            {
+                _competitionService.AddResult(competition, team);
+            }
+            //TODO fix ça un jour
+            catch (Exception)
+            {
+
+            }
+            return RedirectToAction("GetTreePartial", "Competition", new { id });
         }
 
         public ActionResult StartCompetition(string id)
@@ -115,6 +136,27 @@ namespace Petanque.Web.Controllers
                                          AffiliateCompetition = !competition.IsCryingCompetion ?  competition.CryingCompetitionId : mainCompetition.Id
                                      };
             return View("Tree", competitionDto);
+        }
+
+        public ActionResult GetTreePartial(string id)
+        {
+            var competition = _competitionService.Find(id);
+            Competition mainCompetition = null;
+            if (competition.IsCryingCompetion)
+            {
+                mainCompetition = _competitionService.GetMainCompetition(competition);
+            }
+            var node = _nodeService.GetTree(competition);
+
+            var competitionDto = new CompetitionDto
+            {
+                Id = competition.Id,
+                Nom = competition.Name,
+                Node = node,
+                IsCryingCompetion = competition.IsCryingCompetion,
+                AffiliateCompetition = !competition.IsCryingCompetion ? competition.CryingCompetitionId : mainCompetition.Id
+            };
+            return PartialView("PartialNode", competitionDto.Node);
         }
 
 

@@ -1,5 +1,4 @@
-﻿@using System.Globalization
-@model Petanque.Model.Competition.Node
+﻿@model Petanque.Model.Competition.Node
 @{
     bool isWinner = false;
     bool isLoser = false;
@@ -19,7 +18,15 @@
     {
         if (isNotPlayed)
         {
-    @Html.ActionLink(Model.Team.Name, "SetWinner", "Competition", new { id = Model.CompetitionId, teamId = Model.Team.Id }, null)
+    <script>
+        $(document).ready(function () {
+            $("#Team-@Model.Team.Number").click(function () {
+                $("#tree").load("@Url.Action("SetWinnerAjax", "Competition", new { id = Model.CompetitionId, teamId = Model.Team.Id })");
+            });
+        });
+    </script>
+    <a id="Team-@Model.Team.Number">@Model.Team.Name</a>
+    @*@Html.ActionLink(Model.Team.Name, "SetWinner", "Competition", new { id = Model.CompetitionId, teamId = Model.Team.Id }, new { id = "refresh" })*@
         }
         else if (isWinner)
         {

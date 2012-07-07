@@ -6,6 +6,11 @@
     Tournoi @Model.Nom
 </h2>
 
-@Html.Partial("PartialNode", Model.Node)
+
+<div id="tree">
+     
+    @Html.Partial("PartialNode", Model.Node)
+</div>
+
 
 @Html.ActionLink(Model.IsCryingCompetion ? "Tournoi principal" : "Consolante", "GetTree", "Competition", new {id = Model.AffiliateCompetition}, null)
