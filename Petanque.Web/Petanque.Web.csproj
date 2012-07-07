@@ -316,6 +316,7 @@
     <None Include="Content\less\utilities.less" />
     <None Include="Content\less\variables.less" />
     <None Include="Content\less\wells.less" />
+    <Content Include="Views\Team\PartialCreate.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

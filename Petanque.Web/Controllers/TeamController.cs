@@ -29,6 +29,14 @@ namespace Petanque.Web.Controllers
             return View(teamDtos);
         }
 
+
+        public ActionResult IndexPartial(string id)
+        {
+            var competition = _competitionService.Find(id);
+            var teamDtos = competition.InitialTeams.Select(x => new TeamDto() { Nom = x.Name, Id = x.Id });
+            return PartialView("IndexTeam", teamDtos);
+        }
+
         //
         // GET: /Team/Details/5
 
@@ -37,7 +45,7 @@ namespace Petanque.Web.Controllers
             return View();
         }
 
-       
+
 
         //
         // POST: /Team/Create
@@ -56,7 +64,31 @@ namespace Petanque.Web.Controllers
 
                     return RedirectToAction("AddTeamInCompetition", "Team", new { competitionId = teamDto.CompetitionId });
                 }
-                
+
+
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public ActionResult PartialCreate(TeamDto teamDto)
+        {
+            try
+            {
+                var team = new Team(teamDto.Nom, false, teamDto.Number);
+                _teamService.Save(team);
+                if (!string.IsNullOrEmpty(teamDto.CompetitionId))
+                {
+                    var competition = _competitionService.Find(teamDto.CompetitionId);
+                    _competitionService.CreateTeamInCompetion(team, competition);
+                    
+                    return RedirectToAction("AddTeamInCompetitionPartial", "Team", new { competitionId = teamDto.CompetitionId });
+                }
+
 
                 return RedirectToAction("Index");
             }
@@ -72,7 +104,11 @@ namespace Petanque.Web.Controllers
         public ActionResult Edit(string id)
         {
             var team = _teamService.Find(id);
-            return View(new TeamDto() { Nom = team.Name });
+            return View(new TeamDto()
+                            {
+                                Number = team.Number,
+                                Nom = team.Name
+                            });
         }
 
         //
@@ -125,13 +161,48 @@ namespace Petanque.Web.Controllers
         {
             var competition = _competitionService.Find(competitionId);
             var number = _competitionService.GetNextNumber(competition);
-                
-                var teamDto = new TeamDto()
-                              {
-                                  Number = number,
-                                  CompetitionId = competitionId
-                              };
-            return View("Create", teamDto);
+
+            var teamDto = new TeamDto()
+                          {
+                              Number = number,
+                              CompetitionId = competitionId,
+                          };
+            var dto = new CreateTeamDto()
+                          {
+                              TeamDto = teamDto,
+                              TeamDtos = competition.InitialTeams.Select(x => new TeamDto()
+                                                                                  {
+                                                                                      CompetitionId = competitionId,
+                                                                                      Nom = x.Name,
+                                                                                      Number = x.Number,
+                                                                                      Id = x.Id
+                                                                                  })
+                          };
+            return View("Create", dto);
+        }
+
+        public ActionResult AddTeamInCompetitionPartial(string competitionId)
+        {
+            var competition = _competitionService.Find(competitionId);
+            var number = _competitionService.GetNextNumber(competition);
+
+            var teamDto = new TeamDto()
+            {
+                Number = number,
+                CompetitionId = competitionId,
+            };
+            var dto = new CreateTeamDto()
+            {
+                TeamDto = teamDto,
+                TeamDtos = competition.InitialTeams.Select(x => new TeamDto()
+                {
+                    CompetitionId = competitionId,
+                    Nom = x.Name,
+                    Number = x.Number,
+                    Id = x.Id
+                })
+            };
+            return PartialView("PartialCreate", dto);
         }
 
         public ActionResult AddTeamInCompetitionDebug(string competitionId, int nbTeam)
@@ -140,12 +211,12 @@ namespace Petanque.Web.Controllers
 
             for (int i = 0; i < nbTeam; i++)
             {
-                var team = new Team(string.Format("{0}-Team{1}",competition.Name, i), false, i + 1);
+                var team = new Team(string.Format("{0}-Team{1}", competition.Name, i), false, i + 1);
                 _teamService.Save(team);
                 _competitionService.AddTeam(competition, team);
             }
 
-            return RedirectToAction("Edit", "Competition", new {id = competitionId});
+            return RedirectToAction("Edit", "Competition", new { id = competitionId });
         }
 
         private static string RandomString(int size, bool lowerCase)
@@ -164,5 +235,5 @@ namespace Petanque.Web.Controllers
         }
     }
 
-  
+
 }

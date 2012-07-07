@@ -1,0 +1,29 @@
+﻿@using Petanque.Web.Extensions
+@model Petanque.Web.Models.CreateTeamDto
+@using (Ajax.BeginForm("PartialCreate", "Team", new AjaxOptions()
+                                                               {
+                                                                   UpdateTargetId = "target"
+                                                               }, new { @class = "form-horizontal" }))
+{
+    <fieldset>
+        <div class="control-group">
+            @Html.LabelFor(x => x.TeamDto.Number, new { @class = "control-label" })
+            <div class="controls">
+                @Html.TextBoxFor(x => x.TeamDto.Number, new { @readonly = "true", @class = "input-xlarge" })
+            </div>
+        </div>
+        <div class="control-group">
+            @Html.LabelFor(x => x.TeamDto.Nom, new { @class = "control-label" })
+            <div class="controls">
+                @Html.TextBoxFor(x => x.TeamDto.Nom, new { @class = "input-xlarge" })
+            </div>
+        </div>
+    </fieldset>
+
+    @Html.HiddenFor(x => x.TeamDto.CompetitionId)
+    <div class="form-actions">
+        <button type="submit" class="btn">
+            Ajouter</button></div>
+       
+}
+@Html.Partial("IndexTeam", Model.TeamDtos)

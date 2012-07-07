@@ -1,31 +1,9 @@
 ﻿@using Petanque.Web.Extensions
-@model Petanque.Web.Models.TeamDto
+@model Petanque.Web.Models.CreateTeamDto
 @{
     Layout = "../Shared/_Layout.cshtml";
     ViewBag.Title = "Ajouter équipe";
 }
-<div>
-    @using (Html.BeginForm("Create", "Team", FormMethod.Post, new { @class = "form-horizontal" }))
-    {
-        <fieldset>
-            <div class="control-group">
-                @Html.LabelFor(x => x.Number, new { @class = "control-label" })
-                <div class="controls">
-                    @Html.TextBoxFor(x => x.Number, new { @readonly = "true", @class = "input-xlarge" })
-                </div>
-            </div>
-            <div class="control-group">
-                @Html.LabelFor(x => x.Nom, new { @class = "control-label" })
-                <div class="controls">
-                    @Html.TextBoxFor(x => x.Nom, new { @class = "input-xlarge" })
-                </div>
-            </div>
-        </fieldset>
-
-        @Html.HiddenFor(x => x.CompetitionId)
-        <div class="form-actions">
-            <button type="submit" class="btn">
-                Ajouter</button></div>
-        
-    }
+<div id="target">
+    @Html.Partial("PartialCreate", Model)
 </div>
