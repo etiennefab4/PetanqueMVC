@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using System.Web.Routing;
 using MongoDB.Bson.Serialization;
-using Petanque.Model.Competition;
+using Petanque.Model.Competitions;
 
 namespace Petanque.Web
 {
@@ -45,6 +41,10 @@ namespace Petanque.Web
                         cm.MapProperty(c => c.CryingCompetitionId);
                         cm.MapProperty(c => c.NbTeamMainCompetition);
                         cm.MapProperty(c => c.IsLocked);
+                        cm.MapProperty(c => c.BetByTeam);
+                        cm.MapProperty(c => c.Price);
+                        cm.MapProperty(c => c.PercentOfThePot);
+                        cm.MapProperty(c => c.Pot);
                     }
                 );
 

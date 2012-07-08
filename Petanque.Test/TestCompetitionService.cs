@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using Moq;
 using NUnit.Framework;
-using Petanque.Model.Competition;
+using Petanque.Model.Competitions;
 using Petanque.Model.Repository;
-using Petanque.Model.Team;
+using Petanque.Model.Teams;
 
 namespace Petanque.Test
 {
@@ -14,18 +14,16 @@ namespace Petanque.Test
     public class TestCompetitionService
     {
         private Mock<MongoRepository<Competition>> _mockRepo;
-        private CompetitionService _competitionService;
-        private List<Team> _teams;
         private Competition _competition;
 
         [TestFixtureSetUp]
         public void TestFixtureSetUp()
         {
-            _teams = TeamsGenerator.GetTeams(30);
+            TeamsGenerator.GetTeams(30);
 
-            _competition = new Competition("name", false);
+            _competition = new Competition("name", false, 0, 0);
             _mockRepo = MockRepository.GetMongoRepository(new List<Competition>(){_competition});
-            _competitionService = new CompetitionService(_mockRepo.Object, null);
+            new CompetitionService(_mockRepo.Object, null,null, null);
         }
 
        

@@ -1,22 +1,23 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Petanque.Model.Competitions;
 using Petanque.Model.Repository;
-using Petanque.Model.Team;
+using Petanque.Model.Results;
+using Petanque.Model.Teams;
 
-namespace Petanque.Model.Competition
+
+namespace Petanque.Model.Nodes
 {
     public class NodeService
     {
         private readonly MongoRepository<Result> _resultRepo;
-        private readonly MongoRepository<Competition> _competitionRepo;
         private readonly TeamService _teamService;
 
-        public NodeService(MongoRepository<Result> resultRepo, TeamService teamService, MongoRepository<Competition> competitionRepo)
+        public NodeService(MongoRepository<Result> resultRepo, TeamService teamService)
         {
             _resultRepo = resultRepo;
             _teamService = teamService;
-            _competitionRepo = competitionRepo;
         }
 
         public Node ApplyResultOnCompetition(Competition competition, Node nodeTree)
@@ -24,33 +25,36 @@ namespace Petanque.Model.Competition
             return competition.Results.OrderBy(x => x.Date).Aggregate(nodeTree, (current, result) => ApplyResultOnCompetition(result, current));
         }
 
-        public Result CreateResult(Node rootNode, Team.Team teamWin)
+        public Result CreateResult(Node rootNode, Team teamWin)
         {
 
-            Node nodeOfTeamWin = SearchNodeOfTeam(teamWin, rootNode);
+            var nodeOfTeamWin = SearchNodeOfTeam(teamWin, rootNode);
 
             if (nodeOfTeamWin.ParentNode == null)
             {
                 throw new ResultImpossibleException();
             }
 
-            Node nodeOfTeamLoose = nodeOfTeamWin.ParentNode.BottomNode == nodeOfTeamWin ? nodeOfTeamWin.ParentNode.TopNode : nodeOfTeamWin.ParentNode.BottomNode;
+            var nodeOfTeamLoose = nodeOfTeamWin.ParentNode.BottomNode == nodeOfTeamWin ? nodeOfTeamWin.ParentNode.TopNode : nodeOfTeamWin.ParentNode.BottomNode;
 
-            var result = new Result { TeamWin = teamWin, TeamLoose = nodeOfTeamLoose.Team };
+            var result = new Result { TeamWin = teamWin, TeamLoose = nodeOfTeamLoose.Team, DepthOfTheGame = nodeOfTeamWin.DepthOfTheTree};
 
             _teamService.UpdatePlayedGame(result);
 
             _resultRepo.Save(result);
+
             return result;
         }
+
+       
 
         public Node GetTree(Competition competition)
         {
             
-            var tmpTeams = new List<Team.Team>();
+            var tmpTeams = new List<Team>();
             tmpTeams.AddRange(competition.InitialTeams);
             var nbTeamInFirstLevel = CalculateNbTeamInFirstLevel(competition.InitialTeams.Count(), competition.Depth);
-            var listTeamInFirstLevel = new List<Team.Team>();
+            var listTeamInFirstLevel = new List<Team>();
 
             for (int i = 0; i < nbTeamInFirstLevel; i++)
             {
@@ -103,7 +107,7 @@ namespace Petanque.Model.Competition
 
 
 
-        private Node SearchNodeOfTeam(Team.Team team, Node rootNode)
+        private Node SearchNodeOfTeam(Team team, Node rootNode)
         {
             if (rootNode.Team != null && rootNode.Team.Id == team.Id)
             {
@@ -152,7 +156,7 @@ namespace Petanque.Model.Competition
             return rootNode;
         }
 
-        private Team.Team PickATeam(List<Team.Team> teams)
+        private Team PickATeam(List<Team> teams)
         {
             if (!teams.Any()) return null;
             var teamPicked = teams.First();
@@ -160,7 +164,7 @@ namespace Petanque.Model.Competition
             return teamPicked;
         }
 
-        private Node CreateNode(List<Team.Team> listTeamInFirstLevel, List<Team.Team> teams, Competition competition, Node parentNode, int levelTree, int depth)
+        private Node CreateNode(List<Team> listTeamInFirstLevel, List<Team> teams, Competition competition, Node parentNode, int levelTree, int depth)
         {
             if (levelTree > depth)
                 return null;

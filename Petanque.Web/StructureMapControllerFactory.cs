@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Web.Mvc;
 using MongoDB.Driver;
-using Petanque.Model.Competition;
+using Petanque.Model.Competitions;
 using Petanque.Model.Repository;
-using Petanque.Model.Team;
+using Petanque.Model.Results;
+using Petanque.Model.Teams;
 using StructureMap;
 using StructureMap.Pipeline;
 

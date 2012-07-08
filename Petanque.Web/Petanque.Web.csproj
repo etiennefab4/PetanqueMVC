@@ -237,9 +237,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Team\Index.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\Team\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>

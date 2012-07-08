@@ -7,7 +7,7 @@
     <AzureSlot>Staging</AzureSlot>
     <AzureEnableIntelliTrace>False</AzureEnableIntelliTrace>
     <AzureEnableProfiling>False</AzureEnableProfiling>
-    <AzureEnableWebDeploy>True</AzureEnableWebDeploy>
+    <AzureEnableWebDeploy>False</AzureEnableWebDeploy>
     <AzureStorageAccountName>etiennep</AzureStorageAccountName>
     <AzureStorageAccountLabel>etiennep</AzureStorageAccountLabel>
     <AzureDeploymentLabel>Petanque.Azure</AzureDeploymentLabel>

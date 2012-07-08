@@ -1,4 +1,6 @@
-namespace Petanque.Model.Competition
+using Petanque.Model.Teams;
+
+namespace Petanque.Model.Nodes
 {
     public class Node
     {
@@ -6,7 +8,7 @@ namespace Petanque.Model.Competition
         public int Level;
         public Node TopNode;
         public Node BottomNode;
-        public Team.Team Team;
+        public Team Team;
         public Node ParentNode;
         public string CompetitionId;
     }

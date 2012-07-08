@@ -1,9 +1,11 @@
 using Petanque.Model.Repository;
 
-namespace Petanque.Model.Team
+namespace Petanque.Model.Teams
 {
     public class Team : AbstractMongoEntity
     {
+        public double Gain { get; set; }
+        public int WinInARow { get; set; }
         public string Name { get;  set; }
         public int GamePlayed { get; set; }
         public int Number { get; set; }
@@ -27,6 +29,7 @@ namespace Petanque.Model.Team
         public Team()
         {
             GamePlayed = 0;
+            WinInARow = 0;
         }
     }
 }

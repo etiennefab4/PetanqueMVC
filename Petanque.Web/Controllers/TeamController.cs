@@ -1,9 +1,7 @@
-﻿using System;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Web.Mvc;
-using Petanque.Model.Competition;
-using Petanque.Model.Team;
+using Petanque.Model.Competitions;
+using Petanque.Model.Teams;
 using Petanque.Web.Models;
 
 namespace Petanque.Web.Controllers
@@ -46,33 +44,6 @@ namespace Petanque.Web.Controllers
         }
 
 
-
-        //
-        // POST: /Team/Create
-
-        [HttpPost]
-        public ActionResult Create(TeamDto teamDto)
-        {
-            try
-            {
-                var team = new Team(teamDto.Nom, false, teamDto.Number);
-                _teamService.Save(team);
-                if (!string.IsNullOrEmpty(teamDto.CompetitionId))
-                {
-                    var competition = _competitionService.Find(teamDto.CompetitionId);
-                    _competitionService.CreateTeamInCompetion(team, competition);
-
-                    return RedirectToAction("AddTeamInCompetition", "Team", new { competitionId = teamDto.CompetitionId });
-                }
-
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
 
         [HttpPost]
         public ActionResult PartialCreate(TeamDto teamDto)
@@ -159,14 +130,20 @@ namespace Petanque.Web.Controllers
 
         public ActionResult AddTeamInCompetition(string competitionId)
         {
+            var dto = CreateTeamDto(competitionId);
+            return View("Create", dto);
+        }
+
+        private CreateTeamDto CreateTeamDto(string competitionId)
+        {
             var competition = _competitionService.Find(competitionId);
             var number = _competitionService.GetNextNumber(competition);
 
             var teamDto = new TeamDto()
-                          {
-                              Number = number,
-                              CompetitionId = competitionId,
-                          };
+                              {
+                                  Number = number,
+                                  CompetitionId = competitionId,
+                              };
             var dto = new CreateTeamDto()
                           {
                               TeamDto = teamDto,
@@ -178,30 +155,12 @@ namespace Petanque.Web.Controllers
                                                                                       Id = x.Id
                                                                                   })
                           };
-            return View("Create", dto);
+            return dto;
         }
 
         public ActionResult AddTeamInCompetitionPartial(string competitionId)
         {
-            var competition = _competitionService.Find(competitionId);
-            var number = _competitionService.GetNextNumber(competition);
-
-            var teamDto = new TeamDto()
-            {
-                Number = number,
-                CompetitionId = competitionId,
-            };
-            var dto = new CreateTeamDto()
-            {
-                TeamDto = teamDto,
-                TeamDtos = competition.InitialTeams.Select(x => new TeamDto()
-                {
-                    CompetitionId = competitionId,
-                    Nom = x.Name,
-                    Number = x.Number,
-                    Id = x.Id
-                })
-            };
+            var dto = CreateTeamDto(competitionId);
             return PartialView("PartialCreate", dto);
         }
 
@@ -217,21 +176,6 @@ namespace Petanque.Web.Controllers
             }
 
             return RedirectToAction("Edit", "Competition", new { id = competitionId });
-        }
-
-        private static string RandomString(int size, bool lowerCase)
-        {
-            StringBuilder builder = new StringBuilder();
-            Random random = new Random();
-            char ch;
-            for (int i = 0; i < size; i++)
-            {
-                ch = Convert.ToChar(Convert.ToInt32(Math.Floor(26 * random.NextDouble() + 65)));
-                builder.Append(ch);
-            }
-            if (lowerCase)
-                return builder.ToString().ToLower();
-            return builder.ToString();
         }
     }
 

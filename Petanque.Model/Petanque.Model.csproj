@@ -63,19 +63,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Competition\CannotAddTeamInLockedCompetition.cs" />
-    <Compile Include="Competition\Competition.cs" />
-    <Compile Include="Competition\CompetitionService.cs" />
-    <Compile Include="Competition\Node.cs" />
-    <Compile Include="Competition\NodeService.cs" />
-    <Compile Include="Competition\NumberOfTeamIncoherentWithDepthException.cs" />
-    <Compile Include="Competition\Result.cs" />
-    <Compile Include="Competition\ResultImpossibleException.cs" />
+    <Compile Include="Competitions\CannotAddTeamInLockedCompetition.cs" />
+    <Compile Include="Competitions\CannotDeterminateNowTheNbTeamToRefundException.cs" />
+    <Compile Include="Competitions\Competition.cs" />
+    <Compile Include="Competitions\CompetitionService.cs" />
+    <Compile Include="Competitions\NumberOfTeamIncoherentWithDepthException.cs" />
+    <Compile Include="Competitions\ResultImpossibleException.cs" />
+    <Compile Include="Nodes\Node.cs" />
+    <Compile Include="Nodes\NodeService.cs" />
+    <Compile Include="Prices\PotCannotBeNegatifException.cs" />
+    <Compile Include="Prices\PriceService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\AbstractMongoEntity.cs" />
     <Compile Include="Repository\MongoRepository.cs" />
-    <Compile Include="Team\Team.cs" />
-    <Compile Include="Team\TeamService.cs" />
+    <Compile Include="Results\Result.cs" />
+    <Compile Include="Teams\Team.cs" />
+    <Compile Include="Teams\TeamService.cs" />
     <Compile Include="Tools\Extension\ToolsExtension.cs" />
   </ItemGroup>
   <ItemGroup>

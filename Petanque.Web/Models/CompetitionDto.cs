@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Petanque.Model.Competition;
+using Petanque.Model.Nodes;
 
 namespace Petanque.Web.Models
 {

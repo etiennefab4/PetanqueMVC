@@ -2,8 +2,8 @@
 using MongoDB.Driver;
 using NUnit.Framework;
 using Petanque.Model.Repository;
-using Petanque.Model.Team;
 using System.Linq;
+using Petanque.Model.Teams;
 
 namespace Petanque.Test
 {

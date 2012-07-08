@@ -1,21 +1,28 @@
-﻿using System;
-using MongoDB.Bson;
-using Petanque.Model.Tools.Extension;
-using System.Linq;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using MongoDB.Bson;
+using Petanque.Model.Nodes;
+using Petanque.Model.Prices;
 using Petanque.Model.Repository;
+using Petanque.Model.Teams;
+using Petanque.Model.Tools.Extension;
 
-namespace Petanque.Model.Competition
+namespace Petanque.Model.Competitions
 {
     public class CompetitionService
     {
         private readonly MongoRepository<Competition> _competitionRepo;
         private readonly NodeService _nodeService;
+        private readonly MongoRepository<Team> _teamRepo;
+        private readonly PriceService _priceService;
 
-        public CompetitionService(MongoRepository<Competition> competitionRepo, NodeService nodeService)
+        public CompetitionService(MongoRepository<Competition> competitionRepo, NodeService nodeService, MongoRepository<Team> teamRepo, PriceService priceService)
         {
             _competitionRepo = competitionRepo;
             _nodeService = nodeService;
+            _teamRepo = teamRepo;
+            _priceService = priceService;
         }
 
         public Competition GetCompetition(string id)
@@ -57,7 +64,12 @@ namespace Petanque.Model.Competition
             Save(competition);
         }
 
-        public void AddTeam(Competition competition, Team.Team team)
+        public bool IsTeamIsEliminated(Competition competition, Team team)
+        {
+            return competition.Results.Any(x => x.TeamLoose == team);
+        }
+
+        public void AddTeam(Competition competition, Team team)
         {
             if (competition.IsLocked)
             {
@@ -67,7 +79,7 @@ namespace Petanque.Model.Competition
             _competitionRepo.Save(competition);
         }
 
-        public void AddResult( Competition competition, Team.Team team )
+        public void AddResult( Competition competition, Team team )
         {
             var rootNode = _nodeService.GetTree(competition);
             var result = _nodeService.CreateResult(rootNode, team);
@@ -86,29 +98,37 @@ namespace Petanque.Model.Competition
                     Save(cryingCompetition);
                 }
             }
-
+                
             competition.Results.Add(result);
+
+            if (team.WinInARow == 2)
+            {
+                _priceService.RefundTeam(competition, team);
+            }
+
+            if (team.WinInARow > 2)
+            {
+
+            }
             Save(competition);
             
         }
 
-        void AddTeamInCryingCompetition(Competition competition, Team.Team team)
+        void AddTeamInCryingCompetition(Competition competition, Team team)
         {
-            var teamToReplace = competition.InitialTeams.Where(x => x.IsTeamToReplace).FirstOrDefault();
-            if(teamToReplace != null)
-            {
-                competition.InitialTeams.Remove(teamToReplace);
-                competition.AddTeam(team);
-                Save(competition);  
-            }
-            else
+            var teamToReplace = competition.InitialTeams.FirstOrDefault(x => x.IsTeamToReplace);
+            if (teamToReplace == null)
             {
                 throw new Exception("pas possible normalement, learn to code noob");
             }
-           
+            competition.InitialTeams.Remove(teamToReplace);
+            competition.AddTeam(team);
+            team.WinInARow = 0;
+            _teamRepo.Save(team);
+            Save(competition);
         }
 
-        public void CreateTeamInCompetion(Team.Team team, Competition competition)
+        public void CreateTeamInCompetion(Team team, Competition competition)
         {
             competition.AddTeam(team);
             Save(competition);
@@ -122,27 +142,33 @@ namespace Petanque.Model.Competition
 
         public Competition CreateCompetition(int nbTeam)
         {
-            var competition = new Competition("debug", false);
+            var competition = new Competition("debug", false, 0, 0);
             for (int i = 0; i < nbTeam; i++)
             {
-                competition.AddTeam(new Team.Team("team-" + i, false, i + 1));
+                competition.AddTeam(new Team("team-" + i, false, i + 1));
             }
             return competition;
         }
 
         public Competition CreateCompetition(string name)
         {
-            var competition = new Competition(name, false);
-            var cryingCompetition = new Competition(name, true);
+            var competition = new Competition(name, false, 0, 0);
+            var cryingCompetition = new Competition(name, true, 0, 0);
             Save(cryingCompetition);
             competition.CryingCompetitionId = cryingCompetition.ObjectId.ToString();
             Save(competition);
             return competition;
         }
 
-        public Competition GetCryingCompetition(Competition competition)
+        public void StartCompetition(Competition competition)
         {
-            return Find(competition.CryingCompetitionId);
+            var cryingCompetition = GetCryingCompetition(competition);
+            Randomize(competition);
+            PopulateCryingCompetition(cryingCompetition);
+            AttributeBet(competition);
+            AttributeBet(cryingCompetition);
+            Lock(competition);
+
         }
 
         public Competition GetMainCompetition(Competition cryingCompetition)
@@ -151,7 +177,20 @@ namespace Petanque.Model.Competition
                 _competitionRepo.QueryAll().FirstOrDefault(x => x.CryingCompetitionId == cryingCompetition.Id);
         }
 
-        public void PopulateCryingCompetition(Competition competition)
+
+        public int GetNextNumber(Competition competition)
+        {
+            return competition.InitialTeams.Any() ? competition.InitialTeams.Max(x => x.Number) + 1 : 1;
+        }
+
+        #region private method
+
+        private Competition GetCryingCompetition(Competition competition)
+        {
+            return Find(competition.CryingCompetitionId);
+        }
+
+        private void PopulateCryingCompetition(Competition competition)
         {
             if (competition.IsCryingCompetion && !competition.InitialTeams.Any())
             {
@@ -160,16 +199,28 @@ namespace Petanque.Model.Competition
                 int nbTeamToAdd = competition.NumberOfTeam;
                 for (int i = 0; i < nbTeamToAdd; i++)
                 {
-                    var team = new Team.Team("A remplacer", true, 0);
+                    var team = new Team("A remplacer", true, 0);
                     competition.InitialTeams.Add(team);
                     _competitionRepo.Save(competition);
                 }
             }
         }
 
-        public int GetNextNumber(Competition competition)
+        private void AttributeBet(Competition competition)
         {
-            return competition.InitialTeams.Any() ? competition.InitialTeams.Max(x => x.Number) + 1 : 1;
+            if(!competition.IsCryingCompetion)
+            {
+                competition.Pot = (competition.BetByTeam * competition.InitialTeams.Count) * competition.PercentOfThePot;
+            }
+            else
+            {
+                var mainCompetition = GetMainCompetition(competition);
+                competition.Pot = (mainCompetition.BetByTeam * mainCompetition.InitialTeams.Count) * (1.0 - competition.PercentOfThePot);
+            }
+
+           Save(competition);
+            
         }
+        #endregion
     }
 }

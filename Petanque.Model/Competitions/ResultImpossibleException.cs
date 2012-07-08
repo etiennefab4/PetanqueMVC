@@ -1,6 +1,6 @@
 using System;
 
-namespace Petanque.Model.Competition
+namespace Petanque.Model.Competitions
 {
     public class ResultImpossibleException : Exception
     {

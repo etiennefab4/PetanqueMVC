@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Mvc;
-using Petanque.Model.Competition;
-using Petanque.Model.Team;
+using Petanque.Model.Competitions;
+using Petanque.Model.Nodes;
+using Petanque.Model.Teams;
 using Petanque.Web.Models;
 
 namespace Petanque.Web.Controllers
@@ -57,35 +58,6 @@ namespace Petanque.Web.Controllers
             return View(competitionDto);
         }
 
-        public ActionResult Randomize(string id)
-        {
-            var competition = _competitionService.Find(id);
-            _competitionService.Randomize(competition);
-            return RedirectToAction("Edit", "Competition", new { id });
-        }
-
-        public ActionResult  SetWinner(string id, string teamId)
-        {
-            var team = _teamService.Find(teamId);
-            var competition = _competitionService.Find(id);
-            if (!competition.IsLocked && !competition.IsCryingCompetion)
-            {
-                return RedirectToAction("GetTree", "Competition", new { id });
-            }
-
-            try
-            {
-                _competitionService.AddResult(competition, team);
-            }
-            //TODO fix ça un jour
-            catch (Exception)
-            {
-
-            }
-
-            return RedirectToAction("GetTree", "Competition", new { id });
-        }
-
         public ActionResult SetWinnerAjax(string id, string teamId)
         {
             var team = _teamService.Find(teamId);
@@ -110,13 +82,10 @@ namespace Petanque.Web.Controllers
         public ActionResult StartCompetition(string id)
         {
             var mainCompetition = _competitionService.GetCompetition(id);
-            var cryingCompetition = _competitionService.GetCryingCompetition(mainCompetition);
-            _competitionService.Randomize(mainCompetition);
-            _competitionService.PopulateCryingCompetition(cryingCompetition);
-            _competitionService.Lock(mainCompetition);
-
+            _competitionService.StartCompetition(mainCompetition);
             return RedirectToAction("GetTree", new { id });
         }
+
         public ActionResult GetTree(string id)
         {
             var competition = _competitionService.Find(id);
@@ -158,7 +127,6 @@ namespace Petanque.Web.Controllers
             };
             return PartialView("PartialNode", competitionDto.Node);
         }
-
 
         public ActionResult GetTreeDebug(int nbTeam)
         {

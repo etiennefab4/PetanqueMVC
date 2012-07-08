@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
-using Petanque.Model.Competition;
 using Petanque.Model.Repository;
+using Petanque.Model.Results;
 
-namespace Petanque.Model.Team
+namespace Petanque.Model.Teams
 {
     public class TeamService
     {
@@ -33,14 +33,19 @@ namespace Petanque.Model.Team
         {
             if (result.TeamLoose != null)
             {
-                UpdatePlayedGame(result.TeamLoose);
+                UpdatePlayedGame(result.TeamLoose, false);
             }
-            UpdatePlayedGame(result.TeamWin);
+            UpdatePlayedGame(result.TeamWin, true);
         }
 
-         public void UpdatePlayedGame(Team team)
+         public void UpdatePlayedGame(Team team, bool isWin)
          {
+            if(isWin)
+             {
+                 team.WinInARow++;
+             }
              team.GamePlayed++;
+             
              Save(team);
          }
     }
