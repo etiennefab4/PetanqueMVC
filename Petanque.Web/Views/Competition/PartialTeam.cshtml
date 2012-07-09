@@ -1,4 +1,4 @@
-﻿@model Petanque.Model.Competition.Node
+﻿@model Petanque.Model.Nodes.Node
 @{
     bool isWinner = false;
     bool isLoser = false;
@@ -18,15 +18,27 @@
     {
         if (isNotPlayed)
         {
+            
     <script>
+
         $(document).ready(function () {
             $("#Team-@Model.Team.Number").click(function () {
-                $("#tree").load("@Url.Action("SetWinnerAjax", "Competition", new { id = Model.CompetitionId, teamId = Model.Team.Id })");
+                $.ajax({
+                    url: '@Url.Action("SetWinnerAjax", "Competition", new { id = Model.CompetitionId, teamId = Model.Team.Id })',
+                    type: "GET",
+                    dataTypeString: "html",
+                    success: function (view) {
+                        $("#tree").html(view);
+                    }
+                });
             });
         });
+                
+              
+
     </script>
     <a id="Team-@Model.Team.Number">@Model.Team.Name</a>
-    @*@Html.ActionLink(Model.Team.Name, "SetWinner", "Competition", new { id = Model.CompetitionId, teamId = Model.Team.Id }, new { id = "refresh" })*@
+@*@Html.ActionLink(Model.Team.Name, "SetWinner", "Competition", new { id = Model.CompetitionId, teamId = Model.Team.Id }, new { id = "refresh" })*@
         }
         else if (isWinner)
         {

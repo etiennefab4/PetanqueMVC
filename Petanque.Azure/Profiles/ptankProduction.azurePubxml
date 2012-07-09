@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <AzureCredentials>WindowsAzureAccount1</AzureCredentials>
+    <AzureCredentials>PtankCred</AzureCredentials>
     <AzureHostedServiceName>ptank</AzureHostedServiceName>
     <AzureHostedServiceLabel>ptank</AzureHostedServiceLabel>
-    <AzureSlot>Staging</AzureSlot>
+    <AzureSlot>Production</AzureSlot>
     <AzureEnableIntelliTrace>False</AzureEnableIntelliTrace>
     <AzureEnableProfiling>False</AzureEnableProfiling>
     <AzureEnableWebDeploy>False</AzureEnableWebDeploy>

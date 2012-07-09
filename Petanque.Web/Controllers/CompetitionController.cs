@@ -64,7 +64,7 @@ namespace Petanque.Web.Controllers
             var competition = _competitionService.Find(id);
             if (!competition.IsLocked && !competition.IsCryingCompetion)
             {
-                return RedirectToAction("GetTree", "Competition", new { id });
+                return RedirectToAction("GetTreePartial", "Competition", new { id });
             }
 
             try
