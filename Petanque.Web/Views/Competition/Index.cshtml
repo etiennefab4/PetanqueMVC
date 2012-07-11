@@ -8,7 +8,7 @@
     @foreach (var competitionDto in Model)
     {
         <tr>
-            <td>@Html.ActionLink(competitionDto.Nom, "GetTree", new { competitionDto.Id })
+            <td>@Html.ActionLink(competitionDto.Nom, "GetMainTree", new { id = competitionDto.Id })
             </td>
             <td>@Html.ActionLink("Edit", "Edit", new { competitionDto.Id })
             </td>

@@ -8,15 +8,13 @@ using Petanque.Web.Models;
 
 namespace Petanque.Web.Controllers
 {
-    public class CompetitionController : Controller
+    public class CompetitionController : BaseController
     {
-        private readonly CompetitionService _competitionService;
         private readonly TeamService _teamService;
         private readonly NodeService _nodeService;
 
-        public CompetitionController(CompetitionService competitionService, TeamService teamService, NodeService nodeService)
+        public CompetitionController(TeamService teamService, NodeService nodeService, CompetitionService competitionService) : base(competitionService)
         {
-            _competitionService = competitionService;
             _teamService = teamService;
             _nodeService = nodeService;
         }
@@ -26,7 +24,7 @@ namespace Petanque.Web.Controllers
 
         public ActionResult Index()
         {
-            var competitions = _competitionService.GetMainCompetition();
+            var competitions = CompetitionService.GetMainCompetition();
             var competitionDtos = competitions.Select(x => new CompetitionDto { Id = x.Id, Nom = x.Name ?? "no name" });
             return View(competitionDtos);
         }
@@ -36,12 +34,13 @@ namespace Petanque.Web.Controllers
 
         public ActionResult Details(string id)
         {
-            var competition = _competitionService.Find(id);
+            
+            MainCompetition = CompetitionService.Find(id);
             return View(new CompetitionDto
                             {
-                                Id = competition.Id,
-                                Nom = competition.Name,
-                                TeamDtos = competition.InitialTeams.Select(x => new TeamDto
+                                Id = MainCompetition.Id,
+                                Nom = MainCompetition.Name,
+                                TeamDtos = MainCompetition.InitialTeams.Select(x => new TeamDto
                                                                                     {
                                                                                         Id = x.Id,
                                                                                         Nom = x.Name
@@ -58,42 +57,44 @@ namespace Petanque.Web.Controllers
             return View(competitionDto);
         }
 
-        public ActionResult SetWinnerAjax(string id, string teamId)
+        public ActionResult SetWinnerAjax(bool isCrying, string teamId)
         {
             var team = _teamService.Find(teamId);
-            var competition = _competitionService.Find(id);
+            var competition = GetCurrentCompetition(isCrying);
             if (!competition.IsLocked && !competition.IsCryingCompetion)
             {
-                return RedirectToAction("GetTreePartial", "Competition", new { id });
+                return RedirectToAction("GetTree", "Competition", new { isCrying });
             }
 
             try
             {
-                _competitionService.AddResult(competition, team);
+                CompetitionService.AddResult(competition, team);
             }
             //TODO fix ça un jour
             catch (Exception)
             {
 
             }
-            return RedirectToAction("GetTreePartial", "Competition", new { id });
+            return RedirectToAction("GetTreePartial", "Competition", new { isCrying });
         }
 
-        public ActionResult StartCompetition(string id)
+        public ActionResult StartCompetition()
         {
-            var mainCompetition = _competitionService.GetCompetition(id);
-            _competitionService.StartCompetition(mainCompetition);
-            return RedirectToAction("GetTree", new { id });
+            CompetitionService.StartCompetition(MainCompetition);
+            return RedirectToAction("GetTree", new { MainCompetition.Id });
         }
 
-        public ActionResult GetTree(string id)
+        public ActionResult GetMainTree(string id)
         {
-            var competition = _competitionService.Find(id);
-            Competition mainCompetition = null;
-            if(competition.IsCryingCompetion)
-            {
-                mainCompetition = _competitionService.GetMainCompetition(competition);
+            MainCompetition = CompetitionService.Find(id);
+            return RedirectToAction("GetTree", "Competition", new {isCrying = false});
             }
+
+        public ActionResult GetTree(bool isCrying)
+        {
+
+            var competition = GetCurrentCompetition(isCrying);
+            ViewBag.Page =  Page.TreeConsolante;
             var node = _nodeService.GetTree(competition);
 
             var competitionDto = new CompetitionDto
@@ -101,20 +102,15 @@ namespace Petanque.Web.Controllers
                                          Id = competition.Id,
                                          Nom = competition.Name,
                                          Node = node,
-                                         IsCryingCompetion = competition.IsCryingCompetion,
-                                         AffiliateCompetition = !competition.IsCryingCompetion ?  competition.CryingCompetitionId : mainCompetition.Id
                                      };
             return View("Tree", competitionDto);
         }
 
-        public ActionResult GetTreePartial(string id)
+       
+        public ActionResult GetTreePartial(bool isCrying)
         {
-            var competition = _competitionService.Find(id);
-            Competition mainCompetition = null;
-            if (competition.IsCryingCompetion)
-            {
-                mainCompetition = _competitionService.GetMainCompetition(competition);
-            }
+            var competition = GetCurrentCompetition(isCrying);
+
             var node = _nodeService.GetTree(competition);
 
             var competitionDto = new CompetitionDto
@@ -122,15 +118,13 @@ namespace Petanque.Web.Controllers
                 Id = competition.Id,
                 Nom = competition.Name,
                 Node = node,
-                IsCryingCompetion = competition.IsCryingCompetion,
-                AffiliateCompetition = !competition.IsCryingCompetion ? competition.CryingCompetitionId : mainCompetition.Id
             };
             return PartialView("PartialNode", competitionDto.Node);
         }
 
         public ActionResult GetTreeDebug(int nbTeam)
         {
-            var competition = _competitionService.CreateCompetition(nbTeam);
+            var competition = CompetitionService.CreateCompetition(nbTeam);
             var node = _nodeService.GetTree(competition);
             var competitionDto = new CompetitionDto
             {
@@ -150,9 +144,9 @@ namespace Petanque.Web.Controllers
         {
             try
             {
-                var competition = _competitionService.CreateCompetition(competitionDto.Nom);
+                MainCompetition = CompetitionService.CreateCompetition(competitionDto.Nom);
 
-                return RedirectToAction("AddTeamInCompetition", "Team", new { competitionId = competition.Id });
+                return RedirectToAction("AddTeamInCompetition", "Team", new { competitionId = MainCompetition.Id });
             }
             catch
             {
@@ -165,12 +159,12 @@ namespace Petanque.Web.Controllers
 
         public ActionResult Edit(string id)
         {
-            var competition = _competitionService.Find(id);
+            MainCompetition = CompetitionService.Find(id);
             return View(new CompetitionDto()
                              {
-                                 Id = competition.Id,
-                                 Nom = competition.Name,
-                                 TeamDtos = competition.InitialTeams.Select(x => new TeamDto
+                                 Id = MainCompetition.Id,
+                                 Nom = MainCompetition.Name,
+                                 TeamDtos = MainCompetition.InitialTeams.Select(x => new TeamDto
                                                                                     {
                                                                                         Id = x.Id,
                                                                                         Nom = x.Name
@@ -186,9 +180,9 @@ namespace Petanque.Web.Controllers
         {
             try
             {
-                var competition = _competitionService.Find(id);
+                var competition = CompetitionService.Find(id);
                 competition.Name = competitionDto.Nom;
-                _competitionService.Save(competition);
+                CompetitionService.Save(competition);
                 return RedirectToAction("Index");
             }
             catch
@@ -197,14 +191,12 @@ namespace Petanque.Web.Controllers
             }
         }
 
-
-
         //
         // GET: /Competition/Delete/5
 
         public ActionResult Delete(string id)
         {
-            _competitionService.Delete(id);
+            CompetitionService.Delete(id);
             return RedirectToAction("Index");
         }
 

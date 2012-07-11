@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Web.Mvc;
 using Petanque.Model.Competitions;
 using Petanque.Model.Teams;
@@ -6,44 +7,21 @@ using Petanque.Web.Models;
 
 namespace Petanque.Web.Controllers
 {
-    public class TeamController : Controller
+    public class TeamController : BaseController
     {
         private readonly TeamService _teamService;
-        private readonly CompetitionService _competitionService;
 
-        public TeamController(TeamService teamService, CompetitionService competitionService)
+        public TeamController(TeamService teamService, CompetitionService competitionService):base(competitionService)
         {
             _teamService = teamService;
-            _competitionService = competitionService;
         }
-
-        //
-        // GET: /Team/
-
-        public ActionResult Index()
-        {
-            var teams = _teamService.GetAllTeams();
-            var teamDtos = teams.Select(x => new TeamDto() { Nom = x.Name, Id = x.Id });
-            return View(teamDtos);
-        }
-
 
         public ActionResult IndexPartial(string id)
         {
-            var competition = _competitionService.Find(id);
+            var competition = CompetitionService.Find(id);
             var teamDtos = competition.InitialTeams.Select(x => new TeamDto() { Nom = x.Name, Id = x.Id });
             return PartialView("IndexTeam", teamDtos);
         }
-
-        //
-        // GET: /Team/Details/5
-
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-
 
         [HttpPost]
         public ActionResult PartialCreate(TeamDto teamDto)
@@ -54,14 +32,12 @@ namespace Petanque.Web.Controllers
                 _teamService.Save(team);
                 if (!string.IsNullOrEmpty(teamDto.CompetitionId))
                 {
-                    var competition = _competitionService.Find(teamDto.CompetitionId);
-                    _competitionService.CreateTeamInCompetion(team, competition);
+                    var competition = CompetitionService.Find(teamDto.CompetitionId);
+                    CompetitionService.CreateTeamInCompetion(team, competition);
                     
                     return RedirectToAction("AddTeamInCompetitionPartial", "Team", new { competitionId = teamDto.CompetitionId });
                 }
-
-
-                return RedirectToAction("Index");
+                throw new Exception();
             }
             catch
             {
@@ -94,7 +70,7 @@ namespace Petanque.Web.Controllers
                 team.Name = teamDto.Nom;
                 _teamService.Save(team);
 
-                return RedirectToAction("Index");
+                return RedirectToAction("Edit","Competition", new {id = MainCompetition.Id});
             }
             catch
             {
@@ -102,31 +78,6 @@ namespace Petanque.Web.Controllers
             }
         }
 
-        //
-        // GET: /Team/Delete/5
-
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        //
-        // POST: /Team/Delete/5
-
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
 
         public ActionResult AddTeamInCompetition(string competitionId)
         {
@@ -136,8 +87,8 @@ namespace Petanque.Web.Controllers
 
         private CreateTeamDto CreateTeamDto(string competitionId)
         {
-            var competition = _competitionService.Find(competitionId);
-            var number = _competitionService.GetNextNumber(competition);
+            var competition = CompetitionService.Find(competitionId);
+            var number = CompetitionService.GetNextNumber(competition);
 
             var teamDto = new TeamDto()
                               {
@@ -166,13 +117,13 @@ namespace Petanque.Web.Controllers
 
         public ActionResult AddTeamInCompetitionDebug(string competitionId, int nbTeam)
         {
-            var competition = _competitionService.Find(competitionId);
+            var competition = CompetitionService.Find(competitionId);
 
             for (int i = 0; i < nbTeam; i++)
             {
                 var team = new Team(string.Format("{0}-Team{1}", competition.Name, i), false, i + 1);
                 _teamService.Save(team);
-                _competitionService.AddTeam(competition, team);
+                CompetitionService.AddTeam(competition, team);
             }
 
             return RedirectToAction("Edit", "Competition", new { id = competitionId });

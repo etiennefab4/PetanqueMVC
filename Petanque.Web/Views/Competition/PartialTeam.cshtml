@@ -23,18 +23,20 @@
 
         $(document).ready(function () {
             $("#Team-@Model.Team.Number").click(function () {
-                $.ajax({
-                    url: '@Url.Action("SetWinnerAjax", "Competition", new { id = Model.CompetitionId, teamId = Model.Team.Id })',
-                    type: "GET",
-                    dataTypeString: "html",
-                    success: function (view) {
-                        $("#tree").html(view);
-                    }
-                });
+                $.ajax(
+                    {
+                        url: '@Html.Raw(Url.Action("SetWinnerAjax", "Competition", new
+                                                               {
+                                                                   isCrying = (Model.CompetitionId == ViewBag.CryingCompetitionId),
+                                                                   teamId = Model.Team.Id
+                                                               }, null))',
+                        dataType: 'html',
+                        success: function(mydata) {
+                            $('#tree').html(mydata);
+                        }
+                    });
             });
         });
-                
-              
 
     </script>
     <a id="Team-@Model.Team.Number">@Model.Team.Name</a>
@@ -51,6 +53,9 @@
     }
     else
     {
+        if (Model.Level < Model.DepthOfTheTree)
+        {
     @content
     }
+}
 }

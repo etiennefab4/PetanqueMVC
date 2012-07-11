@@ -1,0 +1,31 @@
+﻿@model System.Collections.Generic.IEnumerable<Petanque.Web.Models.ResultDto>
+
+@{
+    ViewBag.Title = "Résultats";
+    Layout = "../Shared/_Layout.cshtml";
+}
+
+<table class="table">
+    <tr>
+        <th>
+            Gagnant
+        </th>
+        <th>
+            Perdant
+        </th>
+        <th>
+            
+        </th>
+    </tr>
+    @foreach (var resultDto in Model)
+    {
+        <tr>
+            <td>@resultDto.NameTeamWin)
+            </td>
+            <td>@Html.ActionLink("Edit", "Edit", new { competitionDto.Id })
+            </td>
+            <td>@Html.ActionLink("Delete", "Delete", new { competitionDto.Id })
+            </td>
+        </tr> 
+    }
+</table>
