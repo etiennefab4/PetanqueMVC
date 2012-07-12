@@ -259,9 +259,6 @@
     <Content Include="Views\Competition\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Competition\Details.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\Competition\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>

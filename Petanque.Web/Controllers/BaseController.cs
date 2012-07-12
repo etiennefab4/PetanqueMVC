@@ -32,7 +32,10 @@ namespace Petanque.Web.Controllers
         protected Competition MainCompetition
         {
             get { return CompetitionService.Find(CompetitionId); }
-            set { CompetitionId = value.Id; }
+            set
+            {
+                CompetitionId = value != null ? value.Id : string.Empty;
+            }
         }
 
         protected Competition CryingCompetition

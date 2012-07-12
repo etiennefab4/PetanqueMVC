@@ -20,22 +20,35 @@
     <div class="navbar navbar-fixed-top">
         <div class="navbar-inner">
             <div class="container">
-                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span
-                    class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
-                </a><a class="brand" href="#">P-Tank</a>
-                <div class="nav-collapse">
-                    <ul class="nav">
-                        <li class="active"><a href="#">Acceuil</a></li>
-                        @if (!string.IsNullOrEmpty(ViewBag.MainCompetitionId))
-                        {
-                            <li>@Html.ActionLink("Concours Principal", "GetTree", "Competition", new { isCrying = false }, null)</li>
-                        }
-                        @if (!string.IsNullOrEmpty(ViewBag.CryingCompetitionId))
-                        {
-                            <li>@Html.ActionLink("Consolante", "GetTree", "Competition", new { isCrying = true }, null)</li>
-                        }
-                    </ul>
-                </div>
+                <ul class="nav">
+                    @{
+                        bool competSelected = string.IsNullOrEmpty(ViewBag.MainCompetitionId);
+                        string cssAcceuil = competSelected ? "active" : string.Empty;
+                    }
+
+                        <li class="@cssAcceuil">@Html.ActionLink("Acceuil", "Index","Competition")</li>
+
+                    
+                    @if (!string.IsNullOrEmpty(ViewBag.MainCompetitionId))
+                    {
+                        <li class="dropdown active"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Concours
+                                                        Principal<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li>@Html.ActionLink("Tournoi", "GetTree", "Competition", new { isCrying = false }, null)</li>
+                                <li>@Html.ActionLink("Parametre", "Edit", "Competition", new { id = ViewBag.MainCompetitionId }, null)</li>
+                            </ul>
+                        </li>
+                    }
+                    @if (!string.IsNullOrEmpty(ViewBag.CryingCompetitionId))
+                    {
+                        <li class="dropdown "><a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                                  Consolante<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li>@Html.ActionLink("Tournoi", "GetTree", "Competition", new { isCrying = true }, null)</li>
+                            </ul>
+                        </li>
+                    }
+                </ul>
                 <!--/.nav-collapse -->
             </div>
         </div>
@@ -63,5 +76,8 @@
     <script src="@Url.Content("~/Scripts/bootstrap-tab.js")"></script>
     <script src="@Url.Content("~/Scripts/bootstrap-tooltip.js")"></script>
     <script src="@Url.Content("~/Scripts/bootstrap-popover.js")"></script>
+    <script>
+        $('.dropdown-toggle').dropdown()
+    </script>
 </body>
 </html>

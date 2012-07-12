@@ -24,28 +24,18 @@ namespace Petanque.Web.Controllers
 
         public ActionResult Index()
         {
+            MainCompetition = null;
             var competitions = CompetitionService.GetMainCompetition();
             var competitionDtos = competitions.Select(x => new CompetitionDto { Id = x.Id, Nom = x.Name ?? "no name" });
             return View(competitionDtos);
         }
 
-        //
-        // GET: /Competition/Details/5
-
-        public ActionResult Details(string id)
+        public ActionResult Select(string id)
         {
-            
             MainCompetition = CompetitionService.Find(id);
-            return View(new CompetitionDto
-                            {
-                                Id = MainCompetition.Id,
-                                Nom = MainCompetition.Name,
-                                TeamDtos = MainCompetition.InitialTeams.Select(x => new TeamDto
-                                                                                    {
-                                                                                        Id = x.Id,
-                                                                                        Nom = x.Name
-                                                                                    })
-                            });
+            var competitions = CompetitionService.GetMainCompetition();
+            var competitionDtos = competitions.Select(x => new CompetitionDto { Id = x.Id, Nom = x.Name ?? "no name" });
+            return View("Index", competitionDtos );
         }
 
         //
@@ -59,6 +49,7 @@ namespace Petanque.Web.Controllers
 
         public ActionResult SetWinnerAjax(bool isCrying, string teamId)
         {
+            ViewBag.IsCrying = isCrying;
             var team = _teamService.Find(teamId);
             var competition = GetCurrentCompetition(isCrying);
             if (!competition.IsLocked && !competition.IsCryingCompetion)
@@ -80,19 +71,14 @@ namespace Petanque.Web.Controllers
 
         public ActionResult StartCompetition()
         {
+            ViewBag.IsCrying = false;
             CompetitionService.StartCompetition(MainCompetition);
             return RedirectToAction("GetTree", new { MainCompetition.Id });
         }
 
-        public ActionResult GetMainTree(string id)
-        {
-            MainCompetition = CompetitionService.Find(id);
-            return RedirectToAction("GetTree", "Competition", new {isCrying = false});
-            }
-
         public ActionResult GetTree(bool isCrying)
         {
-
+            ViewBag.IsCrying = isCrying;
             var competition = GetCurrentCompetition(isCrying);
             ViewBag.Page =  Page.TreeConsolante;
             var node = _nodeService.GetTree(competition);
@@ -109,6 +95,7 @@ namespace Petanque.Web.Controllers
        
         public ActionResult GetTreePartial(bool isCrying)
         {
+            ViewBag.IsCrying = isCrying;
             var competition = GetCurrentCompetition(isCrying);
 
             var node = _nodeService.GetTree(competition);
@@ -144,7 +131,8 @@ namespace Petanque.Web.Controllers
         {
             try
             {
-                var competition = _competitionService.CreateCompetition(competitionDto.Nom, competitionDto.Price, competitionDto.BetByTeam, competitionDto.PercentPotForMainCompetion / 100.0);
+                ViewBag.IsCrying = false;
+                MainCompetition = CompetitionService.CreateCompetition(competitionDto.Nom, competitionDto.Price, competitionDto.BetByTeam, competitionDto.PercentPotForMainCompetion / 100.0);
 
                 return RedirectToAction("AddTeamInCompetition", "Team", new { competitionId = MainCompetition.Id });
             }
@@ -159,6 +147,7 @@ namespace Petanque.Web.Controllers
 
         public ActionResult Edit(string id)
         {
+            ViewBag.IsCrying = false;
             MainCompetition = CompetitionService.Find(id);
             return View(new CompetitionDto()
                              {
@@ -172,6 +161,8 @@ namespace Petanque.Web.Controllers
                              });
         }
 
+     
+
         //
         // POST: /Competition/Edit/5
 
@@ -180,6 +171,7 @@ namespace Petanque.Web.Controllers
         {
             try
             {
+                ViewBag.IsCrying = false;
                 var competition = CompetitionService.Find(id);
                 competition.Name = competitionDto.Nom;
                 CompetitionService.Save(competition);

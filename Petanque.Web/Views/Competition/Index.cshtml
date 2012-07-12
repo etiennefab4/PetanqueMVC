@@ -1,16 +1,16 @@
 ﻿@model System.Collections.Generic.IEnumerable<Petanque.Web.Models.CompetitionDto>
 @{
     Layout = "../Shared/_Layout.cshtml";
-    ViewBag.Title = "Liste Competitions";
+    ViewBag.Title = "Liste des tournois";
     
 }
 <table class="table">
     @foreach (var competitionDto in Model)
     {
         <tr>
-            <td>@Html.ActionLink(competitionDto.Nom, "GetMainTree", new { id = competitionDto.Id })
+            <td>@Html.ActionLink(competitionDto.Nom, "Select", new { id = competitionDto.Id })
             </td>
-            <td>@Html.ActionLink("Edit", "Edit", new { competitionDto.Id })
+            <td>@Html.ActionLink("Select", "Select", new { competitionDto.Id })
             </td>
             <td>@Html.ActionLink("Delete", "Delete", new { competitionDto.Id })
             </td>
