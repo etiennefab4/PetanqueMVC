@@ -144,7 +144,7 @@ namespace Petanque.Web.Controllers
         {
             try
             {
-                MainCompetition = CompetitionService.CreateCompetition(competitionDto.Nom);
+                var competition = _competitionService.CreateCompetition(competitionDto.Nom, competitionDto.Price, competitionDto.BetByTeam, competitionDto.PercentPotForMainCompetion / 100.0);
 
                 return RedirectToAction("AddTeamInCompetition", "Team", new { competitionId = MainCompetition.Id });
             }

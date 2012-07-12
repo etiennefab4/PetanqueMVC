@@ -11,5 +11,8 @@ namespace Petanque.Web.Models
         public string Nom { get; set; }
         public IEnumerable<TeamDto> TeamDtos { get; set; }
         public Node Node { get; set; }
+        public double Price { get; set; }
+        public double BetByTeam { get; set; }
+        public double PercentPotForMainCompetion { get; set; }
     }
 }

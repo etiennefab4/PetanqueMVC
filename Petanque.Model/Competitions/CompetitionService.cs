@@ -55,7 +55,7 @@ namespace Petanque.Model.Competitions
         public void Lock(Competition competition)
         {
             competition.IsLocked = true;
-            Save(competition); 
+            Save(competition);
         }
 
         public void Randomize(Competition competition)
@@ -79,14 +79,14 @@ namespace Petanque.Model.Competitions
             _competitionRepo.Save(competition);
         }
 
-        public void AddResult( Competition competition, Team team )
+        public void AddResult(Competition competition, Team team)
         {
             var rootNode = _nodeService.GetTree(competition);
             var result = _nodeService.CreateResult(rootNode, team);
 
-            if(!competition.IsCryingCompetion)
+            if (!competition.IsCryingCompetion)
             {
-                if(team.CanSendToCryingCompetetion)
+                if (team.CanSendToCryingCompetetion)
                 {
                     var cryingCompetition = GetCryingCompetition(competition);
 
@@ -94,24 +94,15 @@ namespace Petanque.Model.Competitions
                     {
                         AddTeamInCryingCompetition(cryingCompetition, result.TeamLoose);
                     }
-                    
+
                     Save(cryingCompetition);
                 }
             }
-                
+
             competition.Results.Add(result);
-
-            if (team.WinInARow == 2)
-            {
-                _priceService.RefundTeam(competition, team);
-            }
-
-            if (team.WinInARow > 2)
-            {
-
-            }
+            _priceService.AttributeGain(competition, result);
             Save(competition);
-            
+
         }
 
         void AddTeamInCryingCompetition(Competition competition, Team team)
@@ -134,15 +125,14 @@ namespace Petanque.Model.Competitions
             Save(competition);
         }
 
-
-        public void Delete(string  id)
+        public void Delete(string id)
         {
             _competitionRepo.Delete(id);
         }
 
         public Competition CreateCompetition(int nbTeam)
         {
-            var competition = new Competition("debug", false, 0, 0);
+            var competition = new Competition("debug", false, 0, 0, 0);
             for (int i = 0; i < nbTeam; i++)
             {
                 competition.AddTeam(new Team("team-" + i, false, i + 1));
@@ -150,10 +140,10 @@ namespace Petanque.Model.Competitions
             return competition;
         }
 
-        public Competition CreateCompetition(string name)
+        public Competition CreateCompetition(string name, double price, double betByTeam, double percentOfThePot)
         {
-            var competition = new Competition(name, false, 0, 0);
-            var cryingCompetition = new Competition(name, true, 0, 0);
+            var competition = new Competition(name, false, price, betByTeam, percentOfThePot);
+            var cryingCompetition = new Competition(name, true, 0, betByTeam, 1 - percentOfThePot);
             Save(cryingCompetition);
             competition.CryingCompetitionId = cryingCompetition.ObjectId.ToString();
             Save(competition);
@@ -165,8 +155,8 @@ namespace Petanque.Model.Competitions
             var cryingCompetition = GetCryingCompetition(competition);
             Randomize(competition);
             PopulateCryingCompetition(cryingCompetition);
-            AttributeBet(competition);
-            AttributeBet(cryingCompetition);
+            _priceService.AttributPot(competition);
+            _priceService.AttributPot(cryingCompetition);
             Lock(competition);
 
         }
@@ -206,21 +196,7 @@ namespace Petanque.Model.Competitions
             }
         }
 
-        private void AttributeBet(Competition competition)
-        {
-            if(!competition.IsCryingCompetion)
-            {
-                competition.Pot = (competition.BetByTeam * competition.InitialTeams.Count) * competition.PercentOfThePot;
-            }
-            else
-            {
-                var mainCompetition = GetMainCompetition(competition);
-                competition.Pot = (mainCompetition.BetByTeam * mainCompetition.InitialTeams.Count) * (1.0 - competition.PercentOfThePot);
-            }
 
-           Save(competition);
-            
-        }
         #endregion
     }
 }

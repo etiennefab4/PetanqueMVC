@@ -10,10 +10,12 @@ namespace Petanque.Model.Results
         public Team TeamLoose { get; set; }
         public DateTime Date { get; set; }
         public int DepthOfTheGame { get; set; }
+        public bool GainProcessed { get; set; }
 
         public Result()
         {
             Date = DateTime.Now;
+            GainProcessed = false;
         }
     }
 }

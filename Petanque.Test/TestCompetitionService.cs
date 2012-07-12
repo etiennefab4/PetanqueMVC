@@ -21,7 +21,7 @@ namespace Petanque.Test
         {
             TeamsGenerator.GetTeams(30);
 
-            _competition = new Competition("name", false, 0, 0);
+            _competition = new Competition("name", false, 0, 0,0);
             _mockRepo = MockRepository.GetMongoRepository(new List<Competition>(){_competition});
             new CompetitionService(_mockRepo.Object, null,null, null);
         }

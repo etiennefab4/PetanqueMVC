@@ -34,11 +34,25 @@ namespace Petanque.Model.Competitions
             get { return !TeamsInCompetition.Any(x => x.GamePlayed < 2); }
         }
 
+        public double PriceForEachGame
+        {
+            get
+            {
+                double nbMatch = 0;
+                for (int i =  Depth - 3; i  >= 0;  i-- )
+                {
+                    nbMatch += Math.Pow(2, i);
+                }
+
+                return DynamicPot/nbMatch;
+            }
+        }
+
         public int NbTeamToRefund
         {
             get
             {
-                if(AllCompetitorHavePlayedTwoTime)
+                if (AllCompetitorHavePlayedTwoTime)
                 {
                     return TeamsToRefund.Count();
                 }
@@ -97,7 +111,8 @@ namespace Petanque.Model.Competitions
         public List<Team> InitialTeams { get; set; }
 
         public Node EndNode;
-       
+        public double DynamicPot { get; set; }
+
         public string Name { get; set; }
 
         protected Competition()
@@ -106,15 +121,17 @@ namespace Petanque.Model.Competitions
             IsCryingCompetion = false;
             InitialTeams = new List<Team>();
             EndNode = new Node { ParentNode = null };
+            DynamicPot = 0;
         }
 
-        public Competition(string name, bool isCryingCompetition, double price, double betByTeam)
+        public Competition(string name, bool isCryingCompetition, double price, double betByTeam, double percentOfThePot)
             : this()
         {
             IsCryingCompetion = isCryingCompetition;
             Price = price;
             BetByTeam = betByTeam;
             Name = name;
+            PercentOfThePot = percentOfThePot;
         }
 
         public void AddTeam(Team team)
